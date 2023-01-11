@@ -43,3 +43,5 @@ class LoginResponse(BaseModel):
     """Login response model."""
 
     login_status: LoginStatus
+    access_token: str
+    refresh_token: str
