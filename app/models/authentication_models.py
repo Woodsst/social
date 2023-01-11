@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
@@ -42,6 +43,12 @@ class LoginRequest(BaseModel):
 class LoginResponse(BaseModel):
     """Login response model."""
 
-    login_status: LoginStatus
-    access_token: str
-    refresh_token: str
+    login_status: LoginStatus = LoginStatus.complete
+    access_token: Optional[str]
+    refresh_token: Optional[str]
+
+
+class LoginWrong(BaseModel):
+    """Login response model."""
+
+    login_status: LoginStatus = LoginStatus.wrong_password

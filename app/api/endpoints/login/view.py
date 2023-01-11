@@ -5,23 +5,28 @@ from fastapi import APIRouter, Depends
 from models.authentication_models import (
     LoginRequest,
     LoginResponse,
-    LoginStatus,
+    LoginWrong,
 )
+from starlette.responses import JSONResponse
 
 login_router = APIRouter()
 
 
-@login_router.post(
+@login_router.get(
     path="/",
     description="Reqeust for login",
     response_model=LoginResponse,
-    responses={HTTPStatus.CONFLICT.value: {"model": LoginResponse}},
+    responses={HTTPStatus.CONFLICT.value: {"model": LoginWrong}},
 )
 async def registration(
     login_request: LoginRequest,
     service: LoginService = Depends(get_login_service),
 ):
     """Представление аутентификации."""
-    if await service.check_password(login_request):
-        pass
-    return LoginResponse(registration_status=LoginStatus.wrong_password)
+    tokens = await service.login(login_request)
+    if tokens:
+        return tokens
+    return JSONResponse(
+        status_code=HTTPStatus.CONFLICT,
+        content=LoginWrong().dict(),
+    )

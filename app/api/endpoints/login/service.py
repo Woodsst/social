@@ -1,41 +1,45 @@
 from functools import lru_cache
-from typing import Optional
-from uuid import UUID
-
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.endpoints.base import BaseService
 from db.get_session import get_session
-from models.authentication_models import LoginRequest
-from sqlalchemy.future import select
+from fastapi import Depends
+from models.authentication_models import (
+    LoginRequest,
+    LoginResponse,
+)
 from schemas.schemas import Users
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from utils.hashed_passwod import check_hashed_password
+from utils.tokens import generate_jwt_tokens
 
 
 class LoginService(BaseService):
     """Service for a user login."""
 
-    async def check_password(self, user_data: LoginRequest) -> bool:
-        """Check password."""
-        hashed_password = await self._get_password(user_data.login)
-
-        if hashed_password:
-            return check_hashed_password(user_data.password, hashed_password)
-
-    async def _get_password(self, login: str) -> Optional[str]:
-        """Request in db for get password."""
-        stmt = select(Users.password).where(Users.login == login)
-        request = await self.session.execute(stmt)
-        password = request.first()
-
-        if password is None:
+    async def login(self, user_data: LoginRequest) -> LoginResponse:
+        """User login."""
+        user_id, user_password = await self._get_user_id_and_password(
+            user_data.login
+        )
+        if user_id is None:
             return
 
-        return password[0]
+        if check_hashed_password(user_data.password, user_password):
+            access, refresh = generate_jwt_tokens(str(user_id))
+            return LoginResponse(
+                access_token=access,
+                refresh_token=refresh,
+            )
 
-    async def _generate_jwt_tokens(self, user_id: UUID):
-        pass
+    async def _get_user_id_and_password(self, login: str) -> str:
+        """Request in db for get user id."""
+        stmt = select(Users.id, Users.password).where(Users.login == login)
+        request = await self.session.execute(stmt)
+        response = request.first()
+        if response is None:
+            return None, None
+        return response
 
 
 @lru_cache()
