@@ -2,21 +2,20 @@ import logging
 import uuid
 from functools import lru_cache
 
+from api.endpoints.base import BaseService
 from db.get_session import get_session
 from fastapi import Depends
 from models.authentication_models import RegistrationRequest
 from schemas.schemas import UserData, Users
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
+from utils.hashed_passwod import hash_password
 
 logger = logging.getLogger(__name__)
 
 
-class RegistrationService:
+class RegistrationService(BaseService):
     """Service for registration users."""
-
-    def __init__(self, session: AsyncSession):
-        self.session = session
 
     async def registration(
         self, registration_form: RegistrationRequest
@@ -25,7 +24,7 @@ class RegistrationService:
             user = Users(
                 id=uuid.uuid4(),
                 login=registration_form.login,
-                password=registration_form.password,
+                password=hash_password(registration_form.password),
                 email=registration_form.email,
             )
             user_data = UserData(id=uuid.uuid4(), user_id=user.id)
@@ -40,6 +39,6 @@ class RegistrationService:
 
 @lru_cache()
 def get_registration_service(
-    engine: AsyncEngine = Depends(get_session),
+    engine: AsyncSession = Depends(get_session),
 ) -> RegistrationService:
     return RegistrationService(engine)
