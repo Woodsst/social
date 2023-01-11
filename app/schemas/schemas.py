@@ -7,10 +7,13 @@ from sqlalchemy.orm import declarative_base, relationship
 Base = declarative_base()
 
 
-class Users(Base):
+class IdMixin:
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
+
+
+class Users(Base, IdMixin):
     __tablename__ = "users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
     login = Column(String)
     password = Column(String)
     create_date = Column(DateTime)
@@ -19,10 +22,9 @@ class Users(Base):
     users_reaction = relationship("users_reaction")
 
 
-class UserData(Base):
+class UserData(Base, IdMixin):
     __tablename__ = "users_data"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
     user_id = Column(ForeignKey("users.id"))
     name = Column(String)
     sur_name = Column(String)
@@ -30,17 +32,15 @@ class UserData(Base):
     date_of_birth = Column(DateTime)
 
 
-class Posts(Base):
+class Posts(Base, IdMixin):
     __tablename__ = "posts"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
     post = Column(String)
 
 
-class PostsUsers(Base):
+class PostsUsers(Base, IdMixin):
     __tablename__ = "posts_users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
     id_author = Column(ForeignKey("users.id"))
     id_post = Column(ForeignKey("posts.id"))
 
@@ -52,10 +52,9 @@ class Reaction(Base):
     Reaction = Column(String)
 
 
-class UsersReactions(Base):
+class UsersReactions(Base, IdMixin):
     __tablename__ = "users_reaction"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
     id_post = Column(ForeignKey("posts.id"))
     id_user = Column(ForeignKey("users.id"))
     reaction = Column(ForeignKey("reaction.id"))
