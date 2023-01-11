@@ -1,12 +1,8 @@
+from api.endpoints.login.service import LoginService, get_login_service
 from fastapi import APIRouter, Depends
-
-from api.endpoints.login.service import (
-    LoginService,
-    get_login_service,
-)
 from models.authentication_models import (
-    LoginResponse,
     LoginRequest,
+    LoginResponse,
     LoginStatus,
 )
 

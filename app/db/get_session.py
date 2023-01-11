@@ -1,10 +1,11 @@
 from typing import Optional
 
-from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 engine: Optional[AsyncEngine] = None
 sql_session: Optional[AsyncSession] = None
 
 
-def get_session():
-    return sql_session
+async def get_session() -> AsyncSession:
+    async with sql_session() as session:
+        yield session

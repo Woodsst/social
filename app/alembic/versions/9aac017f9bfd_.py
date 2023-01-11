@@ -1,16 +1,16 @@
 """empty message
 
-Revision ID: ddc8b7e73cca
+Revision ID: 9aac017f9bfd
 Revises: 
-Create Date: 2023-01-11 08:20:15.857724
+Create Date: 2023-01-11 13:40:54.565277
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "ddc8b7e73cca"
+revision = "9aac017f9bfd"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,10 +33,14 @@ def upgrade() -> None:
     op.create_table(
         "users",
         sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("login", sa.String(), nullable=True),
-        sa.Column("password", sa.String(), nullable=True),
+        sa.Column("login", sa.String(), nullable=False),
+        sa.Column("password", sa.String(), nullable=False),
+        sa.Column("email", sa.String(), nullable=False),
         sa.Column("create_date", sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("email"),
+        sa.UniqueConstraint("login"),
+        sa.UniqueConstraint("password"),
     )
     op.create_table(
         "posts_users",
