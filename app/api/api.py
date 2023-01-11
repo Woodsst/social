@@ -7,5 +7,7 @@ from app.api.endpoints.user_page.view import user_router
 api_router = APIRouter()
 
 api_router.include_router(login_router, prefix="/login", tags=["Authorization"])
-api_router.include_router(registration_router, prefix="/registration", tags=["Authorization"])
+api_router.include_router(
+    registration_router, prefix="/registration", tags=["Authorization"]
+)
 api_router.include_router(user_router, tags=["User Page"])
