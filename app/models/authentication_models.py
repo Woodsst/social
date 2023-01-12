@@ -40,15 +40,25 @@ class LoginRequest(BaseModel):
     password: str
 
 
-class LoginResponse(BaseModel):
-    """Login response model."""
+class Tokens(BaseModel):
 
-    login_status: LoginStatus = LoginStatus.complete
     access_token: Optional[str]
     refresh_token: Optional[str]
 
 
-class LoginWrong(BaseModel):
+class LoginResponse(Tokens):
     """Login response model."""
 
+    login_status: LoginStatus = LoginStatus.complete
+
+
+class LoginWrong(BaseModel):
+    """Wrong password response model."""
+
     login_status: LoginStatus = LoginStatus.wrong_password
+
+
+class WrongToken(BaseModel):
+    """Model for wrong token."""
+
+    message: str = "Wrong token"

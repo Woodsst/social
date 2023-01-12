@@ -1,8 +1,12 @@
 import datetime
+import time
 import uuid
 
 import jwt
+from jwt import DecodeError
+
 from core.config import get_settings
+from core.exceptions.jwt_exceptions import TokenValidityPeriodIsOver
 
 settings = get_settings()
 
@@ -15,7 +19,7 @@ def create_access_token(user_id: str):
         "exp": datetime.datetime.now()
         + datetime.timedelta(hours=settings.jwt_access_lifetime),
         "jti": str(uuid.uuid4()),
-        "iat": datetime.datetime.now(),
+        "iat": time.time(),
     }
     return jwt.encode(
         payload, settings.jwt_access_secret, algorithm=settings.jwt_algorithm
@@ -30,7 +34,7 @@ def create_refresh_token(user_id: str):
         "exp": datetime.datetime.now()
         + datetime.timedelta(days=settings.jwt_refresh_lifetime),
         "jti": str(uuid.uuid4()),
-        "iat": datetime.datetime.now(),
+        "iat": time.time(),
     }
     return jwt.encode(
         payload, settings.jwt_refresh_secret, algorithm=settings.jwt_algorithm
@@ -52,6 +56,19 @@ def decode_refresh_token(token: str):
 
 
 def generate_jwt_tokens(user_id: str) -> tuple:
+    """Create access and refresh tokens."""
     access = create_access_token(user_id)
     refresh = create_refresh_token(user_id)
     return access, refresh
+
+
+def update_access_token(refresh_token):
+    """Update access token by refresh token."""
+    try:
+        payload = decode_refresh_token(refresh_token)
+    except DecodeError:
+        return False
+    lifetime = payload.get("exp")
+    if lifetime < time.time():
+        raise TokenValidityPeriodIsOver()
+    return generate_jwt_tokens(payload.get("user_id"))

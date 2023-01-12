@@ -1,17 +1,22 @@
 from functools import lru_cache
 
-from api.endpoints.base import BaseService
-from db.get_session import get_session
 from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+
+from api.endpoints.base import BaseService
+from core.exceptions.jwt_exceptions import TokenValidityPeriodIsOver
+from db.get_session import get_session
 from models.authentication_models import (
     LoginRequest,
     LoginResponse,
 )
 from schemas.schemas import Users
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 from utils.hashed_passwod import check_hashed_password
-from utils.tokens import generate_jwt_tokens
+from utils.tokens import (
+    generate_jwt_tokens,
+    update_access_token,
+)
 
 
 class LoginService(BaseService):
@@ -40,6 +45,21 @@ class LoginService(BaseService):
         if response is None:
             return None, None
         return response
+
+    async def update_access(self, refresh_token: str):
+        try:
+            tokens = update_access_token(refresh_token)
+            if tokens:
+                access = tokens[0]
+                refresh = tokens[1]
+            else:
+                return False
+        except TokenValidityPeriodIsOver:
+            return False
+        return LoginResponse(
+            access_token=access,
+            refresh_token=refresh,
+        )
 
 
 @lru_cache()
