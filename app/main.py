@@ -1,10 +1,11 @@
 import uvicorn as uvicorn
-from api.api import api_router
-from core.config import get_settings
-from db import get_session
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+
+from api.api import api_router
+from core.config import get_settings
+from db import get_session
 
 settings = get_settings()
 

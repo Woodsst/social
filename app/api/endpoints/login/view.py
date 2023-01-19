@@ -1,7 +1,9 @@
 from http import HTTPStatus
 
-from api.endpoints.login.service import LoginService, get_login_service
 from fastapi import APIRouter, Depends, Header
+from starlette.responses import JSONResponse
+
+from api.endpoints.login.service import LoginService, get_login_service
 from models.authentication_models import (
     LoginRequest,
     LoginResponse,
@@ -9,7 +11,6 @@ from models.authentication_models import (
     Tokens,
     WrongToken,
 )
-from starlette.responses import JSONResponse
 
 login_router = APIRouter()
 

@@ -7,7 +7,9 @@ class TokenValidityPeriodIsOver(HTTPException):
     """Exception for token lifetime is over."""
 
     def __init__(self, status_code=HTTPStatus.UNAUTHORIZED):
-        super().__init__(status_code=status_code, detail="Token validity period is over")
+        super().__init__(
+            status_code=status_code, detail="Token validity period is over"
+        )
         self.status_code = status_code
 
 

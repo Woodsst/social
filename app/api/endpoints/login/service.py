@@ -7,16 +7,10 @@ from sqlalchemy.future import select
 from api.endpoints.base import BaseService
 from core.exceptions.jwt_exceptions import TokenValidityPeriodIsOver
 from db.get_session import get_session
-from models.authentication_models import (
-    LoginRequest,
-    LoginResponse,
-)
+from models.authentication_models import LoginRequest, LoginResponse
 from schemas.schemas import Users
 from utils.hashed_passwod import check_hashed_password
-from utils.tokens import (
-    generate_jwt_tokens,
-    update_access_token,
-)
+from utils.tokens import generate_jwt_tokens, update_access_token
 
 
 class LoginService(BaseService):

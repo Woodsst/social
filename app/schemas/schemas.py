@@ -30,6 +30,7 @@ class Posts(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     post = Column(String, nullable=False)
+    create_at = Column(DateTime, default=datetime.datetime.now())
     author_id = Column(ForeignKey("users.id"))
 
     users_reactions = relationship(UsersReactions)
@@ -42,7 +43,7 @@ class Users(Base):
     login = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
-    create_date = Column(DateTime, default=datetime.datetime.now())
+    create_at = Column(DateTime, default=datetime.datetime.now())
     name = Column(String, nullable=False)
     sur_name = Column(String)
     date_of_birth = Column(DateTime)

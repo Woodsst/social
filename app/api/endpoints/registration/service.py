@@ -2,13 +2,14 @@ import logging
 import uuid
 from functools import lru_cache
 
-from api.endpoints.base import BaseService
-from db.get_session import get_session
 from fastapi import Depends
-from models.authentication_models import RegistrationRequest
-from schemas.schemas import Users
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from api.endpoints.base import BaseService
+from db.get_session import get_session
+from models.authentication_models import RegistrationRequest
+from schemas.schemas import Users
 from utils.hashed_passwod import hash_password
 
 logger = logging.getLogger(__name__)

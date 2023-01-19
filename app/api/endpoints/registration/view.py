@@ -1,16 +1,17 @@
 from http import HTTPStatus
 
+from fastapi import APIRouter, Depends
+from starlette.responses import JSONResponse
+
 from api.endpoints.registration.service import (
     RegistrationService,
     get_registration_service,
 )
-from fastapi import APIRouter, Depends
 from models.authentication_models import (
     RegistrationRequest,
     RegistrationResponse,
     RegistrationStatus,
 )
-from starlette.responses import JSONResponse
 
 registration_router = APIRouter()
 
