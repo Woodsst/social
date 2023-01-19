@@ -6,7 +6,7 @@ from api.endpoints.base import BaseService
 from db.get_session import get_session
 from fastapi import Depends
 from models.authentication_models import RegistrationRequest
-from schemas.schemas import UserData, Users
+from schemas.schemas import Users
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils.hashed_passwod import hash_password
@@ -26,9 +26,9 @@ class RegistrationService(BaseService):
                 login=registration_form.login,
                 password=hash_password(registration_form.password),
                 email=registration_form.email,
+                name=registration_form.name,
             )
-            user_data = UserData(id=uuid.uuid4(), user_id=user.id)
-            self.session.add_all((user, user_data))
+            self.session.add(user)
             await self.session.commit()
         except IntegrityError as err:
             logger.info(err)
@@ -39,6 +39,6 @@ class RegistrationService(BaseService):
 
 @lru_cache()
 def get_registration_service(
-    engine: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ) -> RegistrationService:
-    return RegistrationService(engine)
+    return RegistrationService(session)
