@@ -17,6 +17,7 @@ class RegistrationRequest(BaseModel):
     login: str
     password: str
     email: EmailStr
+    name: str
 
 
 class RegistrationResponse(BaseModel):
