@@ -3,10 +3,12 @@ import time
 import uuid
 
 import jwt
+from fastapi import Depends
+from fastapi.security import HTTPBearer
 from jwt import DecodeError
 
 from core.config import get_settings
-from core.exceptions.jwt_exceptions import TokenValidityPeriodIsOver
+from core.exceptions.jwt_exceptions import TokenValidityPeriodIsOver, TokenWrong
 
 settings = get_settings()
 
@@ -72,3 +74,15 @@ def update_access_token(refresh_token):
     if lifetime < time.time():
         raise TokenValidityPeriodIsOver()
     return generate_jwt_tokens(payload.get("user_id"))
+
+
+def token_checkout(token: HTTPBearer = Depends(HTTPBearer())):
+    """Token checkout."""
+    try:
+        payload = decode_access_token(token.credentials)
+    except DecodeError:
+        raise TokenWrong()
+    lifetime = payload.get("exp")
+    if lifetime < time.time():
+        raise TokenValidityPeriodIsOver()
+    return token.credentials
