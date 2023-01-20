@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from fastapi import APIRouter, Depends
 
 from api.endpoints.reaction.service import (
@@ -5,6 +7,7 @@ from api.endpoints.reaction.service import (
     get_reaction_crud_service,
 )
 from models.reactions import Reaction, Reactions
+from starlette.exceptions import HTTPException
 
 user_reaction = APIRouter()
 
@@ -19,10 +22,16 @@ async def add_reaction_for_post(
 ):
     """Add reaction view."""
     if reaction.reaction == Reactions.like:
-        await service.add_like(reaction.post_id)
+        if await service.add_like(reaction.post_id):
+            return HTTPStatus.OK
+        else:
+            raise HTTPException(HTTPStatus.CONFLICT)
 
     elif reaction.reaction == Reactions.dislike:
-        await service.add_dislike(reaction.post_id)
+        if await service.add_dislike(reaction.post_id):
+            return HTTPStatus.OK
+        else:
+            raise HTTPException(HTTPStatus.CONFLICT)
 
     else:
         await service.del_reaction(reaction.post_id)

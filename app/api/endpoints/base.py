@@ -1,5 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from utils.tokens import decode_access_token
+
 
 class BaseService:
     """Parent for all services."""
@@ -14,3 +16,7 @@ class ServiceWithToken(BaseService):
     def __init__(self, session: AsyncSession, token: str):
         super().__init__(session=session)
         self.token = token
+
+    def get_user_id(self):
+        """Decode token to get user_id."""
+        return decode_access_token(self.token).get("sub")
