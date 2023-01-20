@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from api.endpoints.base import BaseService
+from api.endpoints.base import ServiceWithToken
 from core.exceptions.user_exeptions import UserNotFound
 from db.get_session import get_session
 from models.user_page_models import Post, UserDataInPage
@@ -12,11 +12,7 @@ from schemas.schemas import Posts, Users, UsersReactions
 from utils.tokens import decode_access_token, token_checkout
 
 
-class UserPageService(BaseService):
-    def __init__(self, session: AsyncSession, token: str):
-        super().__init__(session=session)
-        self.token = token
-
+class UserPageService(ServiceWithToken):
     async def get_user_data_from_token(self) -> UserDataInPage:
         """Getting user data by user id."""
         payload: dict = decode_access_token(self.token)
