@@ -9,6 +9,7 @@ class Reactions(int, Enum):
 
     like = 1
     dislike = 0
+    drop_reaction = -1
 
 
 class Reaction(BaseModel):

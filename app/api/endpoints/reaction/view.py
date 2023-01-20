@@ -21,17 +21,11 @@ async def add_reaction_for_post(
     service: ReactionsCrud = Depends(get_reaction_crud_service),
 ):
     """Add reaction view."""
-    if reaction.reaction == Reactions.like:
-        if await service.add_like(reaction.post_id):
-            return HTTPStatus.OK
-        else:
-            raise HTTPException(HTTPStatus.CONFLICT)
-
-    elif reaction.reaction == Reactions.dislike:
-        if await service.add_dislike(reaction.post_id):
-            return HTTPStatus.OK
-        else:
-            raise HTTPException(HTTPStatus.CONFLICT)
-
-    else:
+    if reaction.reaction == Reactions.drop_reaction:
         await service.del_reaction(reaction.post_id)
+        return HTTPStatus.OK
+
+    if await service.add_reaction(reaction.reaction, reaction.post_id):
+        return HTTPStatus.OK
+    else:
+        raise HTTPException(HTTPStatus.CONFLICT)
