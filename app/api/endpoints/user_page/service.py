@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from api.endpoints.base import BaseService
+from core.exceptions.user_exeptions import UserNotFound
 from db.get_session import get_session
 from models.user_page_models import Post, UserDataInPage
 from schemas.schemas import Posts, Users, UsersReactions
@@ -16,19 +17,22 @@ class UserPageService(BaseService):
         super().__init__(session=session)
         self.token = token
 
-    async def get_user_data(self) -> UserDataInPage:
+    async def get_user_data_from_token(self) -> UserDataInPage:
         """Getting user data by user id."""
         payload: dict = decode_access_token(self.token)
         user_id = payload.get("sub")
-        return await self._get_user_data(user_id)
+        return await self.get_user_data(user_id)
 
-    async def _get_user_data(self, user_id: str) -> UserDataInPage:
+    async def get_user_data(self, user_id: str) -> UserDataInPage:
         """Request to the database to receive user data."""
         stmt = select(Users.name, Users.sur_name, Users.date_of_birth).where(
             Users.id == user_id
         )
         reqeust = await self.session.execute(stmt)
-        name, sur_name, date_of_birth = reqeust.first()
+        user_data = reqeust.first()
+        if user_data is None:
+            raise UserNotFound()
+        name, sur_name, date_of_birth = user_data
         posts = await self._get_user_posts(user_id, name)
         user_data = UserDataInPage(
             user_name=name,
