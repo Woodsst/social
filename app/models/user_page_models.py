@@ -19,3 +19,9 @@ class UserDataInPage(BaseModel):
     user_surname: Optional[str]
     date_of_birth: Optional[str]
     posts: Optional[List[Post]]
+
+
+class CreatePost(BaseModel):
+    """Model for new post create."""
+
+    content: str

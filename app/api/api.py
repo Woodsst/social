@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from api.endpoints.posts.view import posts
 from api.endpoints.reaction.view import user_reaction
 from app.api.endpoints.login.view import login_router
 from app.api.endpoints.registration.view import registration_router
@@ -16,5 +17,5 @@ api_router.include_router(
     user_reaction, prefix="/reaction", tags=["User reactions"]
 )
 api_router.include_router(
-    user_reaction, prefix="/post", tags=["Posts CRUD"]
+    posts, prefix="/post", tags=["Posts CRUD"]
 )
