@@ -4,7 +4,7 @@ import uuid
 
 import jwt
 from fastapi import Depends
-from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jwt import DecodeError
 
 from core.config import get_settings
@@ -76,7 +76,7 @@ def update_access_token(refresh_token):
     return generate_jwt_tokens(payload.get("user_id"))
 
 
-def token_checkout(token: HTTPBearer = Depends(HTTPBearer())):
+def token_checkout(token: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
     """Token checkout."""
     try:
         payload = decode_access_token(token.credentials)
