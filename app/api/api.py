@@ -16,6 +16,4 @@ api_router.include_router(user_router, tags=["User Page"])
 api_router.include_router(
     user_reaction, prefix="/reaction", tags=["User reactions"]
 )
-api_router.include_router(
-    posts, prefix="/post", tags=["Posts CRUD"]
-)
+api_router.include_router(posts, prefix="/post", tags=["Posts CRUD"])

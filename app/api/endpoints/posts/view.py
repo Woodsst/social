@@ -11,9 +11,7 @@ posts = APIRouter()
     description="Add new post.",
 )
 async def add_post(
-        post: CreatePost,
-        service: PostsCrud = Depends(get_posts_crud_service)
-
+    post: CreatePost, service: PostsCrud = Depends(get_posts_crud_service)
 ):
     """View for add new post."""
     await service.add(post)

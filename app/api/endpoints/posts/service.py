@@ -19,7 +19,9 @@ class PostsCrud(ServiceWithToken):
 
     async def add(self, post: CreatePost):
         """Add new post."""
-        await self.repo.add_post(content=post.content, author=self.get_user_id())
+        await self.repo.add_post(
+            content=post.content, author=self.get_user_id()
+        )
 
     async def edit(self, post_id: UUID):
         """Edit exist post."""
