@@ -1,61 +1,40 @@
 from typing import List
+from uuid import UUID
 
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 
 from api.endpoints.base import ServiceWithToken
-from core.exceptions.user_exeptions import UserNotFound
-from db.get_session import get_session
+from api.endpoints.user_page.repository import (
+    BaseUserPageRepository,
+    get_user_page_repo,
+)
 from models.user_page_models import Post, UserDataInPage
-from schemas.schemas import Posts, Users, UsersReactions
 from utils.tokens import decode_access_token, token_checkout
 
 
 class UserPageService(ServiceWithToken):
-    async def get_user_data_from_token(self) -> UserDataInPage:
+    def __init__(self, token: str, repo: BaseUserPageRepository):
+        super().__init__(token)
+        self.repo = repo
+
+    async def get_user_data(
+        self, other_user_id: UUID | None = None
+    ) -> UserDataInPage:
         """Getting user data by user id."""
         payload: dict = decode_access_token(self.token)
         user_id = payload.get("sub")
-        return await self.get_user_data(user_id)
-
-    async def get_user_data(self, user_id: str) -> UserDataInPage:
-        """Request to the database to receive user data."""
-        stmt = select(Users.name, Users.sur_name, Users.date_of_birth).where(
-            Users.id == user_id
-        )
-        reqeust = await self.session.execute(stmt)
-        user_data = reqeust.first()
-        if user_data is None:
-            raise UserNotFound()
+        if other_user_id:
+            user_data = await self.repo.get_user_data(other_user_id)
+        user_data = await self.repo.get_user_data(user_id)
         name, sur_name, date_of_birth = user_data
-        posts = await self._get_user_posts(user_id, name)
-        user_data = UserDataInPage(
+        raw_posts = await self.repo.get_user_posts(user_id, name)
+        posts = create_posts(raw_posts, name)
+        return UserDataInPage(
             user_name=name,
             user_surname=sur_name,
             date_of_birth=date_of_birth,
             posts=posts,
         )
-        return user_data
-
-    async def _get_user_posts(
-        self, user_id: str, author_name: str
-    ) -> List[Posts]:
-        """Request to the database to receive user posts."""
-        stmt = (
-            select(Posts.post, UsersReactions.reaction)
-            .join(UsersReactions)
-            .where(
-                user_id == Posts.author_id
-                and Posts.id == UsersReactions.post_id
-            )
-            .order_by(Posts.create_at)
-        )
-        request = await self.session.execute(stmt)
-        raw_posts = request.all()
-        if len(raw_posts) == 0:
-            return raw_posts
-        return await create_posts(raw_posts, author_name)
 
 
 async def create_posts(raw_posts: list, name: str) -> List[Post]:
@@ -94,6 +73,6 @@ async def create_posts(raw_posts: list, name: str) -> List[Post]:
 
 def get_user_page_service(
     token: str = Depends(token_checkout),
-    session: AsyncSession = Depends(get_session),
+    repo: BaseUserPageRepository = Depends(get_user_page_repo),
 ) -> UserPageService:
-    return UserPageService(session=session, token=token)
+    return UserPageService(repo=repo, token=token)
