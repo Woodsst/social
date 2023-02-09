@@ -1,24 +1,23 @@
 from functools import lru_cache
 
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 
-from api.endpoints.base import BaseService
+from api.endpoints.login.repository import BaseLoginRepository, get_login_repo
 from core.exceptions.jwt_exceptions import TokenValidityPeriodIsOver
-from db.get_session import get_session
 from models.authentication_models import LoginRequest, LoginResponse
-from schemas.schemas import Users
 from utils.hashed_passwod import check_hashed_password
 from utils.tokens import generate_jwt_tokens, update_access_token
 
 
-class LoginService(BaseService):
+class LoginService:
     """Service for a user login."""
+
+    def __init__(self, repo: BaseLoginRepository):
+        self.repo = repo
 
     async def login(self, user_data: LoginRequest) -> LoginResponse:
         """User login."""
-        user_id, user_password = await self._get_user_id_and_password(
+        user_id, user_password = await self.repo.get_user_id_and_password(
             user_data.login
         )
         if user_id is None:
@@ -31,16 +30,8 @@ class LoginService(BaseService):
                 refresh_token=refresh,
             )
 
-    async def _get_user_id_and_password(self, login: str) -> str:
-        """Request in db for get user id."""
-        stmt = select(Users.id, Users.password).where(Users.login == login)
-        request = await self.session.execute(stmt)
-        response = request.first()
-        if response is None:
-            return None, None
-        return response
-
-    async def update_access(self, refresh_token: str):
+    @staticmethod
+    async def update_access(refresh_token: str):
         try:
             tokens = update_access_token(refresh_token)
             if tokens:
@@ -58,6 +49,6 @@ class LoginService(BaseService):
 
 @lru_cache()
 def get_login_service(
-    engine: AsyncSession = Depends(get_session),
+    repo: BaseLoginRepository = Depends(get_login_repo),
 ) -> LoginService:
-    return LoginService(engine)
+    return LoginService(repo)

@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from utils.tokens import decode_access_token
 
 
-class BaseService:
-    """Parent for all services."""
+class Repository:
+    """Parent for all repository."""
 
     def __init__(self, session: AsyncSession):
         self.session = session
