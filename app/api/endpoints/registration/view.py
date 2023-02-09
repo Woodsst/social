@@ -26,7 +26,7 @@ async def registration(
     registration_request: RegistrationRequest,
     service: RegistrationService = Depends(get_registration_service),
 ):
-    """Представление регистрации."""
+    """Registration view."""
     if await service.registration(registration_request):
         return RegistrationResponse(
             registration_status=RegistrationStatus.complete
