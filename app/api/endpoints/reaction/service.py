@@ -24,6 +24,7 @@ class ReactionsCrud(ServiceWithToken):
         existing_reaction = await self.repo.check_reaction(post_id, user_id)
         if existing_reaction is None:
             await self.repo.add_reaction(reaction, post_id, user_id)
+            return True
         elif existing_reaction != reaction:
             await self.repo.update_reaction(reaction, post_id, user_id)
             return True

@@ -1,13 +1,13 @@
 from http import HTTPStatus
 
 from fastapi import APIRouter, Depends
+from starlette.exceptions import HTTPException
 
 from api.endpoints.reaction.service import (
     ReactionsCrud,
     get_reaction_crud_service,
 )
 from models.reactions import Reaction, Reactions
-from starlette.exceptions import HTTPException
 
 user_reaction = APIRouter()
 
