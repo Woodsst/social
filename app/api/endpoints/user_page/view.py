@@ -18,7 +18,7 @@ async def user_home_page(
     service: UserPageService = Depends(get_user_page_service),
 ):
     """User home page view."""
-    return await service.get_user_data()
+    return await service.get_self_data()
 
 
 @user_router.get(

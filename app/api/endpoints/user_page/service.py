@@ -1,4 +1,3 @@
-from typing import List
 from uuid import UUID
 
 from fastapi import Depends
@@ -17,58 +16,31 @@ class UserPageService(ServiceWithToken):
         super().__init__(token)
         self.repo = repo
 
-    async def get_user_data(
-        self, other_user_id: UUID | None = None
-    ) -> UserDataInPage:
+    async def get_user_data(self, user_id: UUID) -> UserDataInPage:
         """Getting user data by user id."""
-        payload: dict = decode_access_token(self.token)
-        user_id = payload.get("sub")
-        if other_user_id:
-            user_data = await self.repo.get_user_data(other_user_id)
         user_data = await self.repo.get_user_data(user_id)
         name, sur_name, date_of_birth = user_data
-        raw_posts = await self.repo.get_user_posts(user_id, name)
-        posts = create_posts(raw_posts, name)
+        raw_posts = await self.repo.get_user_posts(user_id)
         return UserDataInPage(
             user_name=name,
             user_surname=sur_name,
             date_of_birth=date_of_birth,
-            posts=posts,
+            posts=[
+                Post(
+                    author=name,
+                    content=post._mapping.get("content"),
+                    like=post._mapping.get("like"),
+                    dislike=post._mapping.get("dislike"),
+                    create_at=post._mapping.get("create_at"),
+                )
+                for post in raw_posts
+            ],
         )
 
-
-async def create_posts(raw_posts: list, name: str) -> List[Post]:
-    """Creating Post Models from raw data."""
-    posts = []
-    first_post = Post(
-        content=raw_posts[0][0],
-        author=name,
-        like=0,
-        dislike=0,
-    )
-    for index, post in enumerate(raw_posts):
-        content, reactions = post
-        if content == first_post.content:
-            if reactions == 1:
-                first_post.like += 1
-            else:
-                first_post.dislike += 1
-        else:
-            posts.append(first_post)
-            first_post = Post(
-                content=content,
-                author=name,
-                like=0,
-                dislike=0,
-            )
-            if reactions == 1:
-                first_post.like += 1
-            else:
-                first_post.dislike += 1
-        if index == len(raw_posts) - 1:
-            posts.append(first_post)
-
-    return posts
+    async def get_self_data(self) -> UserDataInPage:
+        payload: dict = decode_access_token(self.token)
+        user_id = payload.get("sub")
+        return await self.get_user_data(user_id)
 
 
 def get_user_page_service(

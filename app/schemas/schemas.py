@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -12,17 +12,8 @@ class UsersReactions(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     post_id = Column(ForeignKey("posts.id"), nullable=False)
-    user_id = Column(ForeignKey("users.id"), nullable=False)
-    reaction = Column(ForeignKey("reaction.id"))
-
-
-class Reaction(Base):
-    __tablename__ = "reaction"
-
-    id = Column(Integer, primary_key=True)
-    reaction = Column(String, nullable=False)
-
-    posts_users = relationship(UsersReactions)
+    r_like = Column(UUID(as_uuid=True))
+    r_dislike = Column(UUID(as_uuid=True))
 
 
 class Posts(Base):
@@ -48,5 +39,4 @@ class Users(Base):
     sur_name = Column(String)
     date_of_birth = Column(DateTime)
 
-    users_reaction = relationship(UsersReactions)
     users_posts = relationship(Posts)

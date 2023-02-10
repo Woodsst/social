@@ -4,7 +4,7 @@ from functools import lru_cache
 from typing import List
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.endpoints.base import Repository
@@ -20,9 +20,7 @@ class BaseUserPageRepository(ABC):
     """Interface for user page repository."""
 
     @abstractmethod
-    async def get_user_posts(
-        self, user_id: str, author_name: str
-    ) -> List[Posts]:
+    async def get_user_posts(self, user_id: str) -> List[tuple]:
         """Request for getting user posts."""
 
     @abstractmethod
@@ -33,16 +31,22 @@ class BaseUserPageRepository(ABC):
 class UserPageRepository(BaseUserPageRepository, Repository):
     """Work with Postgres repository for user page."""
 
-    async def get_user_posts(self, user_id: str, author_name: str) -> List[str]:
+    async def get_user_posts(self, user_id: str) -> List[str]:
         """Request to the database to receive user posts."""
         stmt = (
-            select(Posts.post, UsersReactions.reaction)
-            .join(UsersReactions)
-            .where(
-                user_id == Posts.author_id
-                and Posts.id == UsersReactions.post_id
+            select(
+                Posts.post.label("content"),
+                func.count(UsersReactions.r_like).label("like"),
+                func.count(UsersReactions.r_dislike).label("dislike"),
+                Posts.create_at,
             )
-            .order_by(Posts.create_at)
+            .join(UsersReactions, isouter=True)
+            .where(user_id == Posts.author_id)
+            .group_by(
+                Posts.id,
+                Posts.create_at,
+            )
+            .order_by(Posts.create_at.desc())
         )
         request = await self.session.execute(stmt)
         return request.all()

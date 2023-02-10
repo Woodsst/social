@@ -8,7 +8,6 @@ from schemas.schemas import (
     Users,
     Posts,
     UsersReactions,
-    Reaction,
 )
 from utils.hashed_passwod import hash_password
 
@@ -53,27 +52,17 @@ def set_user_reaction(reaction_data: dict):
         session.commit()
 
 
-def set_reactions():
-    with Session(engine) as session:
-        user_reaction_like = Reaction(id=1, reaction="like")
-        user_reaction_dislike = Reaction(id=0, reaction="dislike")
-        session.add_all((user_reaction_dislike, user_reaction_like))
-        session.commit()
-
-
 def set_like_and_dislike():
     with Session(engine) as session:
         user2_like_post_user_1 = UsersReactions(
             id=uuid.uuid4(),
             post_id="e98dcd1a-c3f8-4a7e-aecd-1547cfa9fd9e",
-            user_id="a1d40593-242b-46cf-8d4d-4f385ca9a4d3",
-            reaction=1,
+            r_like="a1d40593-242b-46cf-8d4d-4f385ca9a4d3",
         )
         user3_dislike_post_user_1 = UsersReactions(
             id=uuid.uuid4(),
             post_id="e98dcd1a-c3f8-4a7e-aecd-1547cfa9fd9e",
-            user_id="1340693a-2027-40a4-bcbe-07391b504c35",
-            reaction=0,
+            r_dislike="1340693a-2027-40a4-bcbe-07391b504c35",
         )
         session.add_all((user2_like_post_user_1, user3_dislike_post_user_1))
         session.commit()
@@ -122,7 +111,5 @@ user_3_post = {
 
 for post in (user_1_post, user_2_post, user_3_post):
     set_post(post)
-
-set_reactions()
 
 set_like_and_dislike()

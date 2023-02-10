@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel
@@ -10,6 +11,7 @@ class Post(BaseModel):
     content: str
     like: int
     dislike: int
+    create_at: datetime.datetime
 
 
 class UserDataInPage(BaseModel):
