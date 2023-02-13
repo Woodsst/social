@@ -27,6 +27,7 @@ class UserPageService(ServiceWithToken):
             date_of_birth=date_of_birth,
             posts=[
                 Post(
+                    id=str(post._mapping.get("id")),
                     author=name,
                     content=post._mapping.get("content"),
                     like=post._mapping.get("like"),

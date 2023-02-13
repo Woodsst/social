@@ -35,6 +35,7 @@ class UserPageRepository(BaseUserPageRepository, Repository):
         """Request to the database to receive user posts."""
         stmt = (
             select(
+                Posts.id.label("id"),
                 Posts.post.label("content"),
                 func.count(UsersReactions.r_like).label("like"),
                 func.count(UsersReactions.r_dislike).label("dislike"),
