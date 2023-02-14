@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from uuid import uuid4
 
-from sqlalchemy import update
+from sqlalchemy import update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from schemas.schemas import Posts
@@ -43,3 +43,6 @@ class PostPostgresRepository(BasePostRepository):
 
     async def delete_post(self, post_id: str) -> None:
         """Delete post."""
+        stmt = delete(Posts).where(Posts.id == post_id)
+        await self.session.execute(stmt)
+        await self.session.commit()

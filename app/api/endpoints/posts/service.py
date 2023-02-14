@@ -20,18 +20,19 @@ class PostsCrud(ServiceWithToken):
         super().__init__(token)
         self.repo = repo
 
-    async def add(self, post: CreatePost):
+    async def add(self, post: CreatePost) -> None:
         """Add new post."""
         await self.repo.add_post(
             content=post.content, author=self.get_user_id()
         )
 
-    async def edit(self, post: EditPost):
+    async def edit(self, post: EditPost) -> None:
         """Edit exist post."""
         await self.repo.edit_post(post.content, str(post.post_id))
 
-    async def delete(self, post_id: UUID):
+    async def delete(self, post_id: UUID) -> None:
         """Delete post."""
+        await self.repo.delete_post(str(post_id))
 
 
 def get_posts_crud_service(

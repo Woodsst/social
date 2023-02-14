@@ -11,7 +11,7 @@ class UsersReactions(Base):
     __tablename__ = "users_reaction"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
-    post_id = Column(ForeignKey("posts.id"), nullable=False)
+    post_id = Column(ForeignKey("posts.id", ondelete="CASCADE"), nullable=False)
     r_like = Column(UUID(as_uuid=True))
     r_dislike = Column(UUID(as_uuid=True))
 
@@ -24,7 +24,7 @@ class Posts(Base):
     create_at = Column(DateTime, default=datetime.datetime.now())
     author_id = Column(ForeignKey("users.id"))
 
-    users_reactions = relationship(UsersReactions)
+    users_reactions = relationship(UsersReactions, cascade="all, delete")
 
 
 class Users(Base):
