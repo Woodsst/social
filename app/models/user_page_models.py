@@ -1,5 +1,6 @@
 import datetime
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -28,3 +29,9 @@ class CreatePost(BaseModel):
     """Model for new post create."""
 
     content: str
+
+
+class EditPost(CreatePost):
+    """Model for edit post."""
+
+    post_id: UUID

@@ -14,7 +14,7 @@ user_router = APIRouter()
 @user_router.get(
     path="/",
     description="Get user data for home user page.",
-    response_model=UserDataInPage
+    response_model=UserDataInPage,
 )
 async def user_home_page(
     service: UserPageService = Depends(get_user_page_service),
@@ -24,9 +24,7 @@ async def user_home_page(
 
 
 @user_router.get(
-    path="/user",
-    description="Get user page.",
-    response_model=UserDataInPage
+    path="/user", description="Get user page.", response_model=UserDataInPage
 )
 async def user_page(
     service: UserPageService = Depends(get_user_page_service),
