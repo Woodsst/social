@@ -1,6 +1,16 @@
 version: "3.9"
 
 services:
+  app:
+    build: ./app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    env_file:
+      - ./dev.env
+    entrypoint: ["/opt/app/entrypoint.sh"]
+
   postgres:
     image: postgres:latest
     ports:
