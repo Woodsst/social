@@ -12,6 +12,8 @@ from utils.tokens import decode_access_token, token_checkout
 
 
 class UserPageService(ServiceWithToken):
+    """Service for working with user data."""
+
     def __init__(self, token: str, repo: BaseUserPageRepository):
         super().__init__(token)
         self.repo = repo
