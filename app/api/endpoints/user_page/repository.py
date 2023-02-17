@@ -20,7 +20,9 @@ class BaseUserPageRepository(ABC):
     """Interface for user page repository."""
 
     @abstractmethod
-    async def get_user_posts(self, user_id: str, page_size: int, page_number: int) -> List[str]:
+    async def get_user_posts(
+        self, user_id: str, page_size: int, page_number: int
+    ) -> List[str]:
         """Request for getting user posts."""
 
     @abstractmethod
@@ -31,7 +33,9 @@ class BaseUserPageRepository(ABC):
 class UserPageRepository(BaseUserPageRepository, Repository):
     """Work with Postgres repository for user page."""
 
-    async def get_user_posts(self, user_id: str, page_size: int, page_number: int) -> List[str]:
+    async def get_user_posts(
+        self, user_id: str, page_size: int, page_number: int
+    ) -> List[str]:
         """Request to the database to receive user posts."""
         stmt = (
             select(
@@ -49,7 +53,7 @@ class UserPageRepository(BaseUserPageRepository, Repository):
             )
             .order_by(Posts.create_at.desc())
             .limit(page_size)
-            .offset(page_number*page_size)
+            .offset(page_number * page_size)
         )
         request = await self.session.execute(stmt)
         return request.all()

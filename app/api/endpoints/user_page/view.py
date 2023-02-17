@@ -1,7 +1,8 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 
+from api.endpoints.base import Paginator
 from api.endpoints.user_page.service import (
     UserPageService,
     get_user_page_service,
@@ -18,22 +19,23 @@ user_router = APIRouter()
 )
 async def user_home_page(
     service: UserPageService = Depends(get_user_page_service),
-    page_size: int = Query(default=10),
-    page_number: int = Query(default=1),
+    paginator: Paginator = Depends(),
 ):
     """User home page view."""
-    return await service.get_self_data(page_size, page_number)
+    return await service.get_self_data(
+        paginator.page_size, paginator.page_number
+    )
 
 
 @user_router.get(
     path="/user", description="Get user page.", response_model=UserDataInPage
 )
 async def user_page(
-    page_size: int = Query(default=10),
-    page_number: int = Query(default=1),
+    paginator: Paginator = Depends(),
     service: UserPageService = Depends(get_user_page_service),
     id: UUID = None,
-
 ):
     """User page request by id."""
-    return await service.get_user_data(id, page_size=page_size, page_number=page_number)
+    return await service.get_user_data(
+        id, page_size=paginator.page_size, page_number=paginator.page_number
+    )
