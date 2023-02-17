@@ -1,0 +1,31 @@
+version: '3'
+services:
+
+  app:
+    build: ../../app
+    depends_on:
+      - postgres
+    env_file:
+      - ./test.env
+    ports:
+      - "8000:8000"
+    entrypoint: ["/opt/app/entrypoint.sh"]
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./test.env
+
+  tests:
+    build: .
+    links:
+      - app
+      - postgres
+    depends_on:
+      - app
+    env_file:
+      - ./test.env
+    entrypoint: >
+      sh -c "pytest"
