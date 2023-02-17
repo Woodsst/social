@@ -3,3 +3,4 @@ pyJWT==2.6.0
 psycopg==3.1.7
 psycopg-binary==3.1.6
 pytest==7.2.1
+requests==2.28.2
