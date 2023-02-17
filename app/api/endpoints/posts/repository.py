@@ -1,3 +1,4 @@
+import datetime
 from abc import ABC, abstractmethod
 from uuid import uuid4
 
@@ -31,7 +32,7 @@ class PostPostgresRepository(BasePostRepository):
 
     async def add_post(self, content: str, author: str) -> None:
         """Added post."""
-        post = Posts(id=uuid4(), post=content, author_id=author)
+        post = Posts(id=uuid4(), post=content, author_id=author, create_at=datetime.datetime.now())
         self.session.add(post)
         await self.session.commit()
 

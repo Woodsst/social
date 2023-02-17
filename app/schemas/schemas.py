@@ -21,7 +21,7 @@ class Posts(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     post = Column(String, nullable=False)
-    create_at = Column(DateTime, default=datetime.datetime.now())
+    create_at = Column(DateTime)
     author_id = Column(ForeignKey("users.id"))
 
     users_reactions = relationship(UsersReactions, cascade="all, delete")
