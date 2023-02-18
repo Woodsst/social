@@ -6,7 +6,9 @@ from pydantic import BaseSettings, Field
 class Settings(BaseSettings):
     """Settings."""
 
-    postgres_dsn: str = Field("postgresql://app:123@localhost/social")
+    url: str = Field("http://localhost:8000/api/")
+
+    postgres_test_dsn: str = Field("postgresql://app:123@localhost/social")
     jwt_algorithm: str = "HS256"
     jwt_access_secret: str = Field("super secret string for access token")
     jwt_refresh_secret: str = Field("super secret string for refresh token")

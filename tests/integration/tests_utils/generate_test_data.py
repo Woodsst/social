@@ -3,7 +3,7 @@ import uuid
 from psycopg import Cursor
 
 from data.data_for_test import user_1, user_3, user_2
-from utils.hashed_passwod import hash_password
+from tests_utils.hashed_password import hash_password
 
 
 def add_user(user_data: dict, cursor: Cursor):
@@ -48,7 +48,7 @@ def add_post(post_data: dict, cursor: Cursor):
 def add_user_reaction(reaction_data: dict, cursor: Cursor):
     """Add test users reactions."""
     sql = """
-    INSERT INTO users_reactions (post_id, user_id, reaction)
+    INSERT INTO users_reaction (post_id, user_id, reaction)
     VALUES (%s,%s,%s)
     """
     cursor.execute(
@@ -67,7 +67,7 @@ def add_like_and_dislike(cursor: Cursor):
     """Add like and dislike to test posts."""
 
     sql = """
-    INSERT INTO users_reactions (id, post_id, r_like)
+    INSERT INTO users_reaction (id, post_id, r_like)
     VALUES (%s,%s,%s)
     """
     cursor.execute(
@@ -79,7 +79,7 @@ def add_like_and_dislike(cursor: Cursor):
         ),
     )
     sql = """
-    INSERT INTO users_reactions (id, post_id, r_dislike)
+    INSERT INTO users_reaction (id, post_id, r_dislike)
     VALUES (%s,%s,%s)
     """
     cursor.execute(
@@ -123,8 +123,9 @@ def add_test_data(cursor: Cursor):
 
 def delete_data(cursor: Cursor):
     sql = """
-    DELETE FROM users;
-    DELETE FROM users_reactions;
+    DELETE FROM users_reaction;
     DELETE FROM posts;
+    DELETE FROM users;
     """
     cursor.execute(sql)
+    cursor.connection.commit()
