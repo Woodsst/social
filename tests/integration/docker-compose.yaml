@@ -20,12 +20,10 @@ services:
 
   tests:
     build: .
-    links:
-      - app
-      - postgres
     depends_on:
       - app
+      - postgres
     env_file:
       - ./test.env
     entrypoint: >
-      sh -c "pytest"
+      sh -c "python api_wait.py && pytest -v"
