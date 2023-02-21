@@ -1,6 +1,7 @@
 import time
 from http import HTTPStatus
 
+import pytest
 from psycopg import Cursor
 from requests import Session
 
@@ -21,7 +22,7 @@ def test_get_user_page(
         {"login": user_1.get("login"), "password": user_1.get("password")},
     )
     access = tokens.get("access_token")
-    time.sleep(0.5)
+    time.sleep(1)
 
     response = http_session.get(
         url=f"{sett.url}?page_size=10&page_number=0",
@@ -39,3 +40,27 @@ def test_get_user_page(
     assert len(posts) == 1
     assert posts[0].get("id") == user_1_post.get("id")
     assert posts[0].get("content") == user_1_post.get("post")
+
+
+@pytest.mark.parametrize(
+    "token, status_code",
+    (
+        (
+            {
+                "accept": "application/json",
+                "Authorization": "Bearer bad_token",
+            },
+            HTTPStatus.CONFLICT,
+        ),
+        (None, HTTPStatus.FORBIDDEN),
+    ),
+)
+def test_get_user_page_access_denied(
+    token, status_code, http_session: Session, add_test_data_in_postgres
+):
+    """Test - access for user_page endpoint."""
+    response = http_session.get(
+        url=f"{sett.url}?page_size=10&page_number=0", headers=token
+    )
+
+    assert response.status_code == status_code
