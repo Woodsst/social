@@ -1,8 +1,16 @@
+import datetime
 import uuid
 
 from psycopg import Cursor
 
-from data.data_for_test import user_1, user_3, user_2
+from data.data_for_test import (
+    user_1,
+    user_3,
+    user_2,
+    user_1_post,
+    user_3_post,
+    user_2_post,
+)
 from tests_utils.hashed_password import hash_password
 
 
@@ -31,8 +39,8 @@ def add_post(post_data: dict, cursor: Cursor):
     """Add test posts."""
 
     sql = """
-    INSERT INTO posts (id, post, author_id)
-    VALUES (%s,%s,%s)
+    INSERT INTO posts (id, post, author_id, create_at)
+    VALUES (%s, %s, %s, %s)
     """
     cursor.execute(
         sql,
@@ -40,6 +48,7 @@ def add_post(post_data: dict, cursor: Cursor):
             post_data.get("id"),
             post_data.get("post"),
             post_data.get("author_id"),
+            datetime.datetime.now(),
         ),
     )
     cursor.connection.commit()
@@ -98,22 +107,6 @@ def add_test_data(cursor: Cursor):
 
     for user in (user_1, user_3, user_2):
         add_user(user, cursor)
-
-    user_1_post = {
-        "author_id": user_1.get("id"),
-        "id": "e98dcd1a-c3f8-4a7e-aecd-1547cfa9fd9e",
-        "post": "content_1",
-    }
-    user_2_post = {
-        "author_id": user_2.get("id"),
-        "id": "4df9789c-f191-4e6c-a60c-de576a91a47c",
-        "post": "content_2",
-    }
-    user_3_post = {
-        "author_id": user_3.get("id"),
-        "id": "c5e7032a-2c7a-4ea0-9e90-cd366d8af2e6",
-        "post": "content_3",
-    }
 
     for post in (user_1_post, user_2_post, user_3_post):
         add_post(post, cursor)

@@ -33,3 +33,19 @@ user_data_for_login = {
 }
 
 correct_login_status = "complete"
+
+user_1_post = {
+    "author_id": user_1.get("id"),
+    "id": "e98dcd1a-c3f8-4a7e-aecd-1547cfa9fd9e",
+    "post": "content_1",
+}
+user_2_post = {
+    "author_id": user_2.get("id"),
+    "id": "4df9789c-f191-4e6c-a60c-de576a91a47c",
+    "post": "content_2",
+}
+user_3_post = {
+    "author_id": user_3.get("id"),
+    "id": "c5e7032a-2c7a-4ea0-9e90-cd366d8af2e6",
+    "post": "content_3",
+}
