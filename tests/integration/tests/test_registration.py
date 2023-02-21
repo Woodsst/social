@@ -5,6 +5,7 @@ from requests import Session
 
 from config import get_settings
 from tests_utils.postgres_requests import get_user_data
+from data.data_for_test import user_data_for_registration
 
 sett = get_settings()
 
@@ -14,26 +15,21 @@ def test_registration(
 ):
     """Test - correctly working registration endpoint."""
 
-    user_data = {
-        "login": "login",
-        "password": "password",
-        "email": "email@email.com",
-        "name": "name",
-    }
-
     response = http_session.post(
         url=f"{sett.url}registration/",
-        json=user_data,
+        json=user_data_for_registration,
     )
 
     assert response.status_code == HTTPStatus.OK
 
     postgres_data: dict = get_user_data(postgres_cur, "name")
 
-    assert postgres_data.get("login") == user_data.get("login")
-    assert postgres_data.get("email") == user_data.get("email")
-    assert postgres_data.get("name") == user_data.get("name")
-    assert postgres_data.get("password") != user_data.get("password")
+    assert postgres_data.get("login") == user_data_for_registration.get("login")
+    assert postgres_data.get("email") == user_data_for_registration.get("email")
+    assert postgres_data.get("name") == user_data_for_registration.get("name")
+    assert postgres_data.get("password") != user_data_for_registration.get(
+        "password"
+    )
 
 
 def test_registration_unprocessable_entity(http_session: Session):

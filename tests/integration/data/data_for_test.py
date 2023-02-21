@@ -19,3 +19,17 @@ user_3 = {
     "email": "email_3@gmail.com",
     "name": "user_3",
 }
+
+user_data_for_registration = {
+    "login": "login",
+    "password": "password",
+    "email": "email@email.com",
+    "name": "name",
+}
+
+user_data_for_login = {
+    "login": "login",
+    "password": "password",
+}
+
+correct_login_status = "complete"
