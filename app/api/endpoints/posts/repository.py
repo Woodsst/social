@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from uuid import uuid4
 
 from sqlalchemy import update, delete
+from sqlalchemy.engine import CursorResult
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from schemas.schemas import Posts
@@ -44,8 +45,12 @@ class PostPostgresRepository(BasePostRepository):
     async def edit_post(self, content: str, post_id: str) -> None:
         """Edit post."""
         stmt = update(Posts).where(Posts.id == post_id).values(post=content)
-        await self.session.execute(stmt)
+        result: CursorResult = await self.session.execute(stmt)
+        if result.rowcount != 1:
+            await self.session.rollback()
+            return False
         await self.session.commit()
+        return True
 
     async def delete_post(self, post_id: str) -> None:
         """Delete post."""

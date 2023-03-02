@@ -8,6 +8,7 @@ from api.endpoints.posts.repository import (
     BasePostRepository,
     PostPostgresRepository,
 )
+from core.exceptions.posts_exceptions import PostNotFound
 from db.get_session import get_session
 from models.user_page_models import CreatePost, EditPost
 from utils.tokens import token_checkout
@@ -28,7 +29,8 @@ class PostsCrud(ServiceWithToken):
 
     async def edit(self, post: EditPost) -> None:
         """Edit exist post."""
-        await self.repo.edit_post(post.content, str(post.post_id))
+        if not await self.repo.edit_post(post.content, str(post.post_id)):
+            raise PostNotFound()
 
     async def delete(self, post_id: UUID) -> None:
         """Delete post."""
