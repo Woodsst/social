@@ -29,12 +29,13 @@ class PostsCrud(ServiceWithToken):
 
     async def edit(self, post: EditPost) -> None:
         """Edit exist post."""
-        if not await self.repo.edit_post(post.content, str(post.post_id)):
+        if not await self.repo.edit_post(post.content, str(post.post_id), author_id=self.get_user_id()):
             raise PostNotFound()
 
     async def delete(self, post_id: UUID) -> None:
         """Delete post."""
-        await self.repo.delete_post(str(post_id))
+        if not await self.repo.delete_post(str(post_id), author_id=self.get_user_id()):
+            raise PostNotFound()
 
 
 def get_posts_crud_service(

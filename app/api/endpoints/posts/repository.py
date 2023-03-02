@@ -17,11 +17,11 @@ class BasePostRepository(ABC):
         """Add new post."""
 
     @abstractmethod
-    async def edit_post(self, content: str, post_id: str) -> None:
+    async def edit_post(self, content: str, post_id: str, author_id: str) -> None:
         """Edit post."""
 
     @abstractmethod
-    async def delete_post(self, post_id: str) -> None:
+    async def delete_post(self, post_id: str, author_id: str) -> None:
         """Delete post."""
 
 
@@ -42,9 +42,9 @@ class PostPostgresRepository(BasePostRepository):
         self.session.add(post)
         await self.session.commit()
 
-    async def edit_post(self, content: str, post_id: str) -> None:
+    async def edit_post(self, content: str, post_id: str, author_id: str) -> None:
         """Edit post."""
-        stmt = update(Posts).where(Posts.id == post_id).values(post=content)
+        stmt = update(Posts).where(Posts.id == post_id, Posts.author_id == author_id).values(post=content)
         result: CursorResult = await self.session.execute(stmt)
         if result.rowcount != 1:
             await self.session.rollback()
@@ -52,8 +52,12 @@ class PostPostgresRepository(BasePostRepository):
         await self.session.commit()
         return True
 
-    async def delete_post(self, post_id: str) -> None:
+    async def delete_post(self, post_id: str, author_id: str) -> None:
         """Delete post."""
-        stmt = delete(Posts).where(Posts.id == post_id)
-        await self.session.execute(stmt)
+        stmt = delete(Posts).where(Posts.id == post_id, Posts.author_id == author_id)
+        result: CursorResult = await self.session.execute(stmt)
+        if result.rowcount != 1:
+            await self.session.rollback()
+            return False
         await self.session.commit()
+        return True
