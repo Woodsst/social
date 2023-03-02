@@ -29,3 +29,15 @@ def login(http_session: Session, user_data: dict) -> dict:
     assert response.status_code == HTTPStatus.OK
 
     return response.json()
+
+
+def get_user_data(http_session: Session, access_token: str) -> dict:
+    """Request to getting user data."""
+
+    response = http_session.get(
+        f"{sett.url}", headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    assert response.status_code == HTTPStatus.OK
+
+    return response.json()
