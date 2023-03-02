@@ -57,3 +57,18 @@ def add_post(
     assert response.status_code == HTTPStatus.OK
 
     return response
+
+
+def get_user_data_by_user_id(
+    http_session: Session, user_id: str, token: str
+) -> dict:
+    """Request to getting user data by user_id."""
+
+    response = http_session.get(
+        url=f"{sett.url}user?id={user_id}&page_size=10&page_number=0",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == HTTPStatus.OK
+
+    return response.json()
