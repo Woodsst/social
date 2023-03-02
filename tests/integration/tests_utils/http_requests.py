@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from requests import Session
+from requests import Session, Response
 
 from config import get_settings
 
@@ -41,3 +41,17 @@ def get_user_data(http_session: Session, access_token: str) -> dict:
     assert response.status_code == HTTPStatus.OK
 
     return response.json()
+
+
+def add_post(http_session: Session, access_token: str, post_data: dict) -> Response:
+    """Request to add new post."""
+
+    response = http_session.post(
+        url=f"{sett.url}post/add",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=post_data,
+    )
+
+    assert response.status_code == HTTPStatus.OK
+
+    return response

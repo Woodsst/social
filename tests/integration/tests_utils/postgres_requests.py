@@ -13,3 +13,17 @@ def get_user_data(cursor: Cursor, user_name: str) -> tuple:
     cursor.execute(sql, (user_name,))
 
     return cursor.fetchone()
+
+
+def get_post_by_id(cursor: Cursor, post_id: str) -> dict:
+    """Getting post data by post id."""
+
+    sql = """
+    SELECT *
+    FROM posts
+    WHERE id = %s
+    """
+
+    cursor.execute(sql, (post_id,))
+
+    return cursor.fetchone()
