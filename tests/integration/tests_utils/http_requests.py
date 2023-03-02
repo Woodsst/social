@@ -43,7 +43,9 @@ def get_user_data(http_session: Session, access_token: str) -> dict:
     return response.json()
 
 
-def add_post(http_session: Session, access_token: str, post_data: dict) -> Response:
+def add_post(
+    http_session: Session, access_token: str, post_data: dict
+) -> Response:
     """Request to add new post."""
 
     response = http_session.post(
