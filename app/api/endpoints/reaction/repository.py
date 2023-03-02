@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from functools import lru_cache
 from typing import Optional
 
+import sqlalchemy.exc
 from fastapi import Depends
 from sqlalchemy import select, update, delete, or_
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -78,7 +79,12 @@ class ReactionsRepository(BaseReactionsRepository, Repository):
                 r_dislike=user_id,
             )
         self.session.add(user_reaction)
-        await self.session.commit()
+        try:
+            await self.session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            await self.session.rollback()
+            return False
+        return True
 
     async def update_reaction(
         self, reaction: Reactions, post_id: str, user_id: str

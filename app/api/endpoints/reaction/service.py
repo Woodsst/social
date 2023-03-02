@@ -7,6 +7,7 @@ from api.endpoints.reaction.repository import (
     BaseReactionsRepository,
     get_reactions_repo,
 )
+from core.exceptions.posts_exceptions import PostNotFound
 from models.reactions import Reactions
 from utils.tokens import token_checkout
 
@@ -23,8 +24,11 @@ class ReactionsCrud(ServiceWithToken):
         user_id = self.get_user_id()
         existing_reaction = await self.repo.check_reaction(post_id, user_id)
         if existing_reaction is None:
-            await self.repo.add_reaction(reaction, post_id, user_id)
-            return True
+            if await self.repo.add_reaction(reaction, post_id, user_id):
+                return True
+            else:
+                raise PostNotFound()
+
         elif existing_reaction != reaction:
             await self.repo.update_reaction(reaction, post_id, user_id)
             return True
