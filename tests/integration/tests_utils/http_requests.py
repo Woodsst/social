@@ -72,3 +72,15 @@ def get_user_data_by_user_id(
     assert response.status_code == HTTPStatus.OK
 
     return response.json()
+
+
+def add_reaction(http_session: Session, reaction_data: str, token: str):
+    """Request to add reactions to another user post."""
+
+    response = http_session.post(
+        url=f"{sett.url}reaction",
+        headers={"Authorization": f"Bearer {token}"},
+        json=reaction_data,
+    )
+
+    assert response.status_code == HTTPStatus.OK

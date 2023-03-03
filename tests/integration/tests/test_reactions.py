@@ -10,6 +10,7 @@ from data.data_for_test import user_1, user_2_post
 from tests_utils.http_requests import (
     login,
     get_user_data_by_user_id,
+    add_reaction,
 )
 
 sett = get_settings()
@@ -44,12 +45,7 @@ def test_add_reaction(
     reaction = user_2_data.get("posts")[0].get(reaction_name)
     assert reaction == 0
 
-    response = http_session.post(
-        url=f"{sett.url}reaction",
-        headers={"Authorization": f"Bearer {access}"},
-        json=reaction_data,
-    )
-    assert response.status_code == status_code
+    add_reaction(http_session, reaction_data, access)
 
     user_2_data = get_user_data_by_user_id(
         http_session, user_2_post.get("author_id"), token=access
@@ -116,3 +112,46 @@ def test_add_reaction_error(
     )
 
     assert response.status_code == status_code
+
+
+@pytest.mark.parametrize(
+    "reaction_code, status_code, reaction_name",
+    ((1, HTTPStatus.OK, "like"), (0, HTTPStatus.OK, "dislike")),
+)
+def test_del_reaction(
+    http_session: Session,
+    reaction_name: str,
+    status_code: HTTPStatus,
+    postgres_cur: Cursor,
+    add_test_data_in_postgres: None,
+    reaction_code: int,
+):
+    """Test 'delete reactions' endpoint."""
+
+    tokens: dict = login(
+        http_session,
+        {"login": user_1.get("login"), "password": user_1.get("password")},
+    )
+
+    access = tokens.get("access_token")
+    time.sleep(1)
+    post_id = user_2_post.get("id")
+    reaction_data = {"post_id": post_id, "reaction": reaction_code}
+
+    add_reaction(http_session, reaction_data, access)
+
+    reaction_data = {"post_id": post_id, "reaction": -1}
+
+    response = http_session.post(
+        url=f"{sett.url}reaction",
+        headers={"Authorization": f"Bearer {access}"},
+        json=reaction_data,
+    )
+
+    assert response.status_code == HTTPStatus.OK
+
+    user_2_data = get_user_data_by_user_id(
+        http_session, user_2_post.get("author_id"), token=access
+    )
+    reaction = user_2_data.get("posts")[0].get(reaction_name)
+    assert reaction == 0
