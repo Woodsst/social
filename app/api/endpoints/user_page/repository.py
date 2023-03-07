@@ -4,14 +4,14 @@ from functools import lru_cache
 from typing import List
 
 from fastapi import Depends
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.endpoints.base import Repository
 from core.exceptions.user_exeptions import UserNotFound
 from db.get_session import get_session
 from models.user_page_models import UserDataInPage
-from schemas.schemas import Users, Posts, UsersReactions
+from schemas.schemas import Posts, Users, UsersReactions
 
 logger = logging.getLogger(__name__)
 

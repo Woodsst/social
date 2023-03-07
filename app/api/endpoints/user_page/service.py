@@ -3,10 +3,8 @@ from uuid import UUID
 from fastapi import Depends
 
 from api.endpoints.base import ServiceWithToken
-from api.endpoints.user_page.repository import (
-    BaseUserPageRepository,
-    get_user_page_repo,
-)
+from api.endpoints.user_page.repository import (BaseUserPageRepository,
+                                                get_user_page_repo)
 from models.user_page_models import Post, UserDataInPage
 from utils.tokens import decode_access_token, token_checkout
 

@@ -4,10 +4,8 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.endpoints.base import ServiceWithToken
-from api.endpoints.posts.repository import (
-    BasePostRepository,
-    PostPostgresRepository,
-)
+from api.endpoints.posts.repository import (BasePostRepository,
+                                            PostPostgresRepository)
 from core.exceptions.posts_exceptions import PostNotFound
 from db.get_session import get_session
 from models.user_page_models import CreatePost, EditPost

@@ -3,10 +3,8 @@ from uuid import UUID
 from fastapi import Depends
 
 from api.endpoints.base import ServiceWithToken
-from api.endpoints.reaction.repository import (
-    BaseReactionsRepository,
-    get_reactions_repo,
-)
+from api.endpoints.reaction.repository import (BaseReactionsRepository,
+                                               get_reactions_repo)
 from core.exceptions.posts_exceptions import PostNotFound
 from models.reactions import Reactions
 from utils.tokens import token_checkout

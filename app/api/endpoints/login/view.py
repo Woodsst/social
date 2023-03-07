@@ -4,13 +4,8 @@ from fastapi import APIRouter, Depends, Header
 from starlette.responses import JSONResponse
 
 from api.endpoints.login.service import LoginService, get_login_service
-from models.authentication_models import (
-    LoginRequest,
-    LoginResponse,
-    LoginWrong,
-    Tokens,
-    WrongToken,
-)
+from models.authentication_models import (LoginRequest, LoginResponse,
+                                          LoginWrong, Tokens, WrongToken)
 
 login_router = APIRouter()
 

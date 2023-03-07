@@ -2,7 +2,7 @@ import datetime
 from abc import ABC, abstractmethod
 from uuid import uuid4
 
-from sqlalchemy import update, delete
+from sqlalchemy import delete, update
 from sqlalchemy.engine import CursorResult
 from sqlalchemy.ext.asyncio import AsyncSession
 

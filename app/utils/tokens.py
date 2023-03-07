@@ -4,11 +4,12 @@ import uuid
 
 import jwt
 from fastapi import Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt import DecodeError
 
 from core.config import get_settings
-from core.exceptions.jwt_exceptions import TokenValidityPeriodIsOver, TokenWrong
+from core.exceptions.jwt_exceptions import (TokenValidityPeriodIsOver,
+                                            TokenWrong)
 
 settings = get_settings()
 

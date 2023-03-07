@@ -5,7 +5,7 @@ from typing import Optional
 
 import sqlalchemy.exc
 from fastapi import Depends
-from sqlalchemy import select, update, delete, or_
+from sqlalchemy import delete, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.endpoints.base import Repository
