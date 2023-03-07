@@ -14,7 +14,7 @@ posts = APIRouter()
 )
 async def add_post(
     post: CreatePost, service: PostsCrud = Depends(get_posts_crud_service)
-):
+) -> dict:
     """View for add new post."""
     await service.add(post)
     return {"message": "ok"}
@@ -24,7 +24,7 @@ async def add_post(
 async def edit_post(
     post: EditPost,
     service: PostsCrud = Depends(get_posts_crud_service),
-):
+) -> dict:
     """View for edit post."""
     await service.edit(post)
     return {"message": "ok"}
@@ -33,7 +33,7 @@ async def edit_post(
 @posts.delete(path="/delete", description="Delete post")
 async def delete_post(
     post_id: UUID, service: PostsCrud = Depends(get_posts_crud_service)
-):
+) -> dict:
     """View for delete post."""
     await service.delete(post_id)
     return {"message": "ok"}

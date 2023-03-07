@@ -17,7 +17,7 @@ user_reaction = APIRouter()
 async def add_reaction_for_post(
     reaction: Reaction,
     service: ReactionsCrud = Depends(get_reaction_crud_service),
-):
+) -> HTTPStatus:
     """Add reaction view."""
     if reaction.reaction == Reactions.drop_reaction:
         await service.del_reaction(reaction.post_id)

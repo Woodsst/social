@@ -47,7 +47,7 @@ class UserPageService(ServiceWithToken):
     ) -> UserDataInPage:
         payload: dict = decode_access_token(self.token)
         user_id = payload.get("sub")
-        return await self.get_user_data(user_id, page_size, page_number)
+        return await self.get_user_data(user_id, page_size, page_number)  # type: ignore
 
 
 def get_user_page_service(

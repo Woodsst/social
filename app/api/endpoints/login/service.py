@@ -31,7 +31,7 @@ class LoginService:
             )
 
     @staticmethod
-    async def update_access(refresh_token: str):
+    async def update_access(refresh_token: str) -> LoginResponse:
         try:
             tokens = update_access_token(refresh_token)
             if tokens:

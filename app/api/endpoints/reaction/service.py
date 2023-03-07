@@ -17,7 +17,7 @@ class ReactionsCrud(ServiceWithToken):
         super().__init__(token)
         self.repo = repo
 
-    async def add_reaction(self, reaction: Reactions, post_id: str):
+    async def add_reaction(self, reaction: Reactions, post_id: str) -> bool:
         """Add reaction from user."""
         user_id = self.get_user_id()
         existing_reaction = await self.repo.check_reaction(post_id, user_id)
@@ -32,7 +32,7 @@ class ReactionsCrud(ServiceWithToken):
             return True
         return False
 
-    async def del_reaction(self, post_id: UUID):
+    async def del_reaction(self, post_id: UUID) -> None:
         """Delete reaction for post."""
         existing_reaction = await self.repo.check_reaction(
             post_id, self.get_user_id()

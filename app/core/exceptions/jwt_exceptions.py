@@ -6,7 +6,7 @@ from starlette.exceptions import HTTPException
 class TokenValidityPeriodIsOver(HTTPException):
     """Exception for token lifetime is over."""
 
-    def __init__(self, status_code=HTTPStatus.UNAUTHORIZED):
+    def __init__(self, status_code: HTTPStatus = HTTPStatus.UNAUTHORIZED):
         super().__init__(
             status_code=status_code, detail="Token validity period is over"
         )
@@ -16,6 +16,6 @@ class TokenValidityPeriodIsOver(HTTPException):
 class TokenWrong(HTTPException):
     """Exception for wrong token format."""
 
-    def __init__(self, status_code=HTTPStatus.CONFLICT):
+    def __init__(self, status_code: HTTPStatus = HTTPStatus.CONFLICT):
         super().__init__(status_code=status_code, detail="Wrong token format")
         self.status_code = status_code

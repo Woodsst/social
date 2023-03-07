@@ -1,6 +1,7 @@
 import abc
 from abc import ABC
 from functools import lru_cache
+from typing import Tuple, Union, Any
 
 from fastapi import Depends
 from sqlalchemy import select
@@ -15,12 +16,12 @@ class BaseLoginRepository(ABC):
     """Interface from login repository."""
 
     @abc.abstractmethod
-    async def get_user_id_and_password(self, login: str) -> str:
+    async def get_user_id_and_password(self, login: str) -> Union[Tuple[None, None], Any]:
         """Request in db for get user id."""
 
 
 class LoginRepository(BaseLoginRepository, Repository):
-    async def get_user_id_and_password(self, login: str) -> str:
+    async def get_user_id_and_password(self, login: str) -> Union[Tuple[None, None], Any]:
         """Request in db for get user id."""
         stmt = select(Users.id, Users.password).where(Users.login == login)
         request = await self.session.execute(stmt)

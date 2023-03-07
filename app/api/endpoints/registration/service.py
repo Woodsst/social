@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Any
 
 from fastapi import Depends
 
@@ -13,7 +14,7 @@ class RegistrationService:
     def __init__(self, repo: BaseRegistrationRepository):
         self.repo = repo
 
-    async def registration(self, registration_form: RegistrationRequest):
+    async def registration(self, registration_form: RegistrationRequest) -> Any:
         """Registration new user."""
         return await self.repo.add_new_user(registration_form)
 

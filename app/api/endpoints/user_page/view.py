@@ -18,7 +18,7 @@ user_router = APIRouter()
 async def user_home_page(
     service: UserPageService = Depends(get_user_page_service),
     paginator: Paginator = Depends(),
-):
+) -> UserDataInPage:
     """User home page view."""
     return await service.get_self_data(
         paginator.page_size, paginator.page_number
@@ -31,8 +31,8 @@ async def user_home_page(
 async def user_page(
     paginator: Paginator = Depends(),
     service: UserPageService = Depends(get_user_page_service),
-    id: UUID = None,
-):
+    id: UUID | None = None,
+) -> UserDataInPage:
     """User page request by id."""
     return await service.get_user_data(
         id, page_size=paginator.page_size, page_number=paginator.page_number

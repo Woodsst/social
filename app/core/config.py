@@ -15,6 +15,6 @@ class Settings(BaseSettings):
 
 
 @lru_cache()
-def get_settings():
+def get_settings() -> Settings:
     """Settings factory."""
-    return Settings()
+    return Settings()  # type: ignore

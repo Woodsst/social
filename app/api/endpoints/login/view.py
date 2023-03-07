@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from typing import Union
 
 from fastapi import APIRouter, Depends, Header
 from starlette.responses import JSONResponse
@@ -19,7 +20,7 @@ login_router = APIRouter()
 async def login(
     login_request: LoginRequest,
     service: LoginService = Depends(get_login_service),
-):
+) -> Union[JSONResponse, LoginResponse]:
     """Login view."""
     tokens = await service.login(login_request)
     if tokens:
@@ -39,7 +40,7 @@ async def login(
 async def update_access_token(
     refresh_token: str = Header(),
     service: LoginService = Depends(get_login_service),
-):
+) -> Union[JSONResponse, LoginResponse]:
     """Update access token by refresh token."""
     tokens = await service.update_access(refresh_token)
     if tokens:

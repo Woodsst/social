@@ -19,11 +19,11 @@ class BasePostRepository(ABC):
     @abstractmethod
     async def edit_post(
         self, content: str, post_id: str, author_id: str
-    ) -> None:
+    ) -> bool:
         """Edit post."""
 
     @abstractmethod
-    async def delete_post(self, post_id: str, author_id: str) -> None:
+    async def delete_post(self, post_id: str, author_id: str) -> bool:
         """Delete post."""
 
 
@@ -46,7 +46,7 @@ class PostPostgresRepository(BasePostRepository):
 
     async def edit_post(
         self, content: str, post_id: str, author_id: str
-    ) -> None:
+    ) -> bool:
         """Edit post."""
         stmt = (
             update(Posts)
@@ -60,7 +60,7 @@ class PostPostgresRepository(BasePostRepository):
         await self.session.commit()
         return True
 
-    async def delete_post(self, post_id: str, author_id: str) -> None:
+    async def delete_post(self, post_id: str, author_id: str) -> bool:
         """Delete post."""
         stmt = delete(Posts).where(
             Posts.id == post_id, Posts.author_id == author_id

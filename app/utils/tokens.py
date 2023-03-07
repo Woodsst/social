@@ -1,6 +1,7 @@
 import datetime
 import time
 import uuid
+from typing import Dict, Any, Union
 
 import jwt
 from fastapi import Depends
@@ -14,7 +15,7 @@ from core.exceptions.jwt_exceptions import (TokenValidityPeriodIsOver,
 settings = get_settings()
 
 
-def create_access_token(user_id: str):
+def create_access_token(user_id: str) -> str:
     """Create access token with 1 hour lifetime."""
     payload = {
         "typ": "JWT",
@@ -29,7 +30,7 @@ def create_access_token(user_id: str):
     )
 
 
-def create_refresh_token(user_id: str):
+def create_refresh_token(user_id: str) -> str:
     """Create refresh token with 2 weak lifetime."""
     payload = {
         "typ": "JWT",
@@ -44,14 +45,14 @@ def create_refresh_token(user_id: str):
     )
 
 
-def decode_access_token(token: str):
+def decode_access_token(token: str) -> Dict[str, Any]:
     """Decode access token."""
     return jwt.decode(
         token, settings.jwt_access_secret, algorithms=settings.jwt_algorithm
     )
 
 
-def decode_refresh_token(token: str):
+def decode_refresh_token(token: str) -> Dict[str, Any]:
     """Decode refresh token."""
     return jwt.decode(
         token, settings.jwt_refresh_secret, algorithms=settings.jwt_algorithm
@@ -65,25 +66,25 @@ def generate_jwt_tokens(user_id: str) -> tuple:
     return access, refresh
 
 
-def update_access_token(refresh_token):
+def update_access_token(refresh_token: str) -> Union[bool, tuple]:
     """Update access token by refresh token."""
     try:
-        payload = decode_refresh_token(refresh_token)
+        payload: dict = decode_refresh_token(refresh_token)
     except DecodeError:
         return False
     lifetime = payload.get("exp")
-    if lifetime < time.time():
+    if lifetime < time.time():  # type: ignore
         raise TokenValidityPeriodIsOver()
-    return generate_jwt_tokens(payload.get("user_id"))
+    return generate_jwt_tokens(payload.get("user_id"))  # type: ignore
 
 
-def token_checkout(token: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
+def token_checkout(token: HTTPAuthorizationCredentials = Depends(HTTPBearer())) -> str:
     """Token checkout."""
     try:
         payload = decode_access_token(token.credentials)
     except DecodeError:
         raise TokenWrong()
     lifetime = payload.get("exp")
-    if lifetime < time.time():
+    if lifetime < time.time():  # type: ignore
         raise TokenValidityPeriodIsOver()
     return token.credentials

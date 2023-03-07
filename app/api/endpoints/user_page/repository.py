@@ -1,7 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 from functools import lru_cache
-from typing import List
+from typing import List, Any
 
 from fastapi import Depends
 from sqlalchemy import func, select
@@ -35,7 +35,7 @@ class UserPageRepository(BaseUserPageRepository, Repository):
 
     async def get_user_posts(
         self, user_id: str, page_size: int, page_number: int
-    ) -> List[str]:
+    ) -> Any:
         """Request to the database to receive user posts."""
         stmt = (
             select(

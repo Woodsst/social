@@ -16,7 +16,7 @@ app = FastAPI(
 
 
 @app.on_event("startup")
-async def startup():
+async def startup() -> None:
     get_session.engine = create_async_engine(settings.postgres_dsn)
     get_session.sql_session = sessionmaker(
         get_session.engine, class_=AsyncSession
@@ -24,7 +24,7 @@ async def startup():
 
 
 @app.on_event("shutdown")
-async def shutdown():
+async def shutdown() -> None:
     await get_session.engine.dispose()
 
 

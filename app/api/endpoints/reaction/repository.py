@@ -26,22 +26,22 @@ class BaseReactionsRepository(ABC):
     @abstractmethod
     async def add_reaction(
         self, reaction: Reactions, post_id: str, user_id: str
-    ):
+    ) -> bool:
         """Insert new reaction from user."""
 
     @abstractmethod
     async def update_reaction(
         self, reaction: Reactions, post_id: str, user_id: str
-    ):
+    ) -> None:
         """Update user reaction."""
 
     @abstractmethod
-    async def del_reaction(self, post_id: str, user_id: str):
+    async def del_reaction(self, post_id: str, user_id: str) -> None:
         """Delete reaction from database."""
 
 
 class ReactionsRepository(BaseReactionsRepository, Repository):
-    async def check_reaction(
+    async def check_reaction(  # type: ignore
         self, post_id: str, user_id: str
     ) -> Optional[Reactions]:
         """Check the existence of a reaction."""
@@ -55,7 +55,7 @@ class ReactionsRepository(BaseReactionsRepository, Repository):
         request = await self.session.execute(stmt)
         response = request.all()
         if len(response) == 0:
-            return
+            return None
         for i in response:
             if i._mapping.get("r_like"):
                 return Reactions.like
@@ -64,7 +64,7 @@ class ReactionsRepository(BaseReactionsRepository, Repository):
 
     async def add_reaction(
         self, reaction: Reactions, post_id: str, user_id: str
-    ):
+    ) -> bool:
         """Insert new reaction from user."""
         if reaction == Reactions.like:
             user_reaction = UsersReactions(
@@ -88,7 +88,7 @@ class ReactionsRepository(BaseReactionsRepository, Repository):
 
     async def update_reaction(
         self, reaction: Reactions, post_id: str, user_id: str
-    ):
+    ) -> None:
         """Update user reaction."""
         if reaction == Reactions.like:
             stmt = (
@@ -111,7 +111,7 @@ class ReactionsRepository(BaseReactionsRepository, Repository):
         await self.session.execute(stmt)
         await self.session.commit()
 
-    async def del_reaction(self, post_id: str, user_id: str):
+    async def del_reaction(self, post_id: str, user_id: str) -> None:
         """Delete reaction from database."""
         stmt = delete(UsersReactions).where(
             UsersReactions.post_id == post_id,

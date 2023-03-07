@@ -1,3 +1,5 @@
+from typing import Dict, Any
+
 from fastapi import Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,7 +19,7 @@ class ServiceWithToken:
     def __init__(self, token: str):
         self.token = token
 
-    def get_user_id(self):
+    def get_user_id(self) -> Any:
         """Decode token to get user_id."""
         return decode_access_token(self.token).get("sub")
 
