@@ -9,19 +9,18 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt import DecodeError
 
 from core.config import get_settings
-from core.exceptions.jwt_exceptions import (TokenValidityPeriodIsOver,
-                                            TokenWrong)
+from core.exceptions.jwt_exceptions import TokenValidityPeriodIsOver, TokenWrong
 
 settings = get_settings()
 
 
 def create_access_token(user_id: str) -> str:
     """Create access token with 1 hour lifetime."""
+    delta = datetime.timedelta(hours=settings.jwt_access_lifetime_hour)
     payload = {
         "typ": "JWT",
         "sub": user_id,
-        "exp": datetime.datetime.now()
-        + datetime.timedelta(hours=settings.jwt_access_lifetime),
+        "exp": datetime.datetime.now() + delta,
         "jti": str(uuid.uuid4()),
         "iat": time.time(),
     }
@@ -32,11 +31,11 @@ def create_access_token(user_id: str) -> str:
 
 def create_refresh_token(user_id: str) -> str:
     """Create refresh token with 2 weak lifetime."""
+    delta = datetime.timedelta(days=settings.jwt_refresh_lifetime_day)
     payload = {
         "typ": "JWT",
         "sub": user_id,
-        "exp": datetime.datetime.now()
-        + datetime.timedelta(days=settings.jwt_refresh_lifetime),
+        "exp": datetime.datetime.now() + delta,
         "jti": str(uuid.uuid4()),
         "iat": time.time(),
     }
@@ -78,7 +77,9 @@ def update_access_token(refresh_token: str) -> Union[bool, tuple]:
     return generate_jwt_tokens(payload.get("user_id"))  # type: ignore
 
 
-def token_checkout(token: HTTPAuthorizationCredentials = Depends(HTTPBearer())) -> str:
+def token_checkout(
+    token: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+) -> str:
     """Token checkout."""
     try:
         payload = decode_access_token(token.credentials)

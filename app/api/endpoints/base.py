@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Any
 
 from fastapi import Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,11 +27,13 @@ class ServiceWithToken:
 class Paginator:
     """Paginator for views."""
 
+    items_limit = 50
+
     def __init__(
         self,
         page_size: int = Query(
             ge=0,
-            le=50,
+            le=items_limit,
             default=10,
             description="Items amount on page",
         ),

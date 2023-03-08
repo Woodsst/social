@@ -21,7 +21,8 @@ class BaseRegistrationRepository(ABC):
 
     @abstractmethod
     async def add_new_user(
-        self, registration_form: RegistrationRequest
+        self,
+        registration_form: RegistrationRequest,
     ) -> bool:
         """Add new user in database."""
 
@@ -30,7 +31,8 @@ class RegistrationRepository(BaseRegistrationRepository, Repository):
     """Postgres repository."""
 
     async def add_new_user(
-        self, registration_form: RegistrationRequest
+        self,
+        registration_form: RegistrationRequest,
     ) -> bool:
         """Query for add new user in database."""
         try:

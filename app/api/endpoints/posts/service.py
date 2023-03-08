@@ -4,8 +4,10 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.endpoints.base import ServiceWithToken
-from api.endpoints.posts.repository import (BasePostRepository,
-                                            PostPostgresRepository)
+from api.endpoints.posts.repository import (
+    BasePostRepository,
+    PostPostgresRepository,
+)
 from core.exceptions.posts_exceptions import PostNotFound
 from db.get_session import get_session
 from models.user_page_models import CreatePost, EditPost
@@ -27,16 +29,18 @@ class PostsCrud(ServiceWithToken):
 
     async def edit(self, post: EditPost) -> None:
         """Edit exist post."""
-        if not await self.repo.edit_post(
+        edit_post = await self.repo.edit_post(
             post.content, str(post.post_id), author_id=self.get_user_id()
-        ):
+        )
+        if not edit_post:
             raise PostNotFound()
 
     async def delete(self, post_id: UUID) -> None:
         """Delete post."""
-        if not await self.repo.delete_post(
+        delete_post = await self.repo.delete_post(
             str(post_id), author_id=self.get_user_id()
-        ):
+        )
+        if not delete_post:
             raise PostNotFound()
 
 

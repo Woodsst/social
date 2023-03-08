@@ -8,6 +8,8 @@ Base = declarative_base()
 
 
 class UsersReactions(Base):
+    """Schema for user reactions table."""
+
     __tablename__ = "users_reaction"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
@@ -17,6 +19,8 @@ class UsersReactions(Base):
 
 
 class Posts(Base):
+    """Schema for posts table."""
+
     __tablename__ = "posts"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
@@ -28,6 +32,8 @@ class Posts(Base):
 
 
 class Users(Base):
+    """Schema for users table."""
+
     __tablename__ = "users"
 
     id = Column(UUID(as_uuid=True), primary_key=True)

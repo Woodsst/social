@@ -3,8 +3,10 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends
 from starlette.exceptions import HTTPException
 
-from api.endpoints.reaction.service import (ReactionsCrud,
-                                            get_reaction_crud_service)
+from api.endpoints.reaction.service import (
+    ReactionsCrud,
+    get_reaction_crud_service,
+)
 from models.reactions import Reaction, Reactions
 
 user_reaction = APIRouter()
@@ -25,5 +27,4 @@ async def add_reaction_for_post(
 
     if await service.add_reaction(reaction.reaction, reaction.post_id):
         return HTTPStatus.OK
-    else:
-        raise HTTPException(HTTPStatus.CONFLICT)
+    raise HTTPException(HTTPStatus.CONFLICT)

@@ -21,7 +21,7 @@ class LoginService:
             user_data.login
         )
         if user_id is None:
-            return
+            return None
 
         if check_hashed_password(user_data.password, user_password):
             access, refresh = generate_jwt_tokens(str(user_id))
@@ -32,6 +32,7 @@ class LoginService:
 
     @staticmethod
     async def update_access(refresh_token: str) -> LoginResponse:
+        """Update access token from refresh token."""
         try:
             tokens = update_access_token(refresh_token)
             if tokens:

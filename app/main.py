@@ -1,4 +1,4 @@
-import uvicorn as uvicorn
+import uvicorn
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -19,7 +19,8 @@ app = FastAPI(
 async def startup() -> None:
     get_session.engine = create_async_engine(settings.postgres_dsn)
     get_session.sql_session = sessionmaker(
-        get_session.engine, class_=AsyncSession
+        get_session.engine,
+        class_=AsyncSession,
     )
 
 
@@ -29,6 +30,5 @@ async def shutdown() -> None:
 
 
 app.include_router(api_router, prefix="/api")
-
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run("main:app", host=settings.app_host, port=settings.app_port)

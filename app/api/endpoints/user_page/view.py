@@ -3,8 +3,10 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 
 from api.endpoints.base import Paginator
-from api.endpoints.user_page.service import (UserPageService,
-                                             get_user_page_service)
+from api.endpoints.user_page.service import (
+    UserPageService,
+    get_user_page_service,
+)
 from models.user_page_models import UserDataInPage
 
 user_router = APIRouter()

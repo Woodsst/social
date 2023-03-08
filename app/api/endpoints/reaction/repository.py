@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from functools import lru_cache
 from typing import Optional
 
-import sqlalchemy.exc
+from sqlalchemy.exc import IntegrityError
 from fastapi import Depends
 from sqlalchemy import delete, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -41,6 +41,8 @@ class BaseReactionsRepository(ABC):
 
 
 class ReactionsRepository(BaseReactionsRepository, Repository):
+    """Repository for work with a database with users reactions."""
+
     async def check_reaction(  # type: ignore
         self, post_id: str, user_id: str
     ) -> Optional[Reactions]:
@@ -56,10 +58,10 @@ class ReactionsRepository(BaseReactionsRepository, Repository):
         response = request.all()
         if len(response) == 0:
             return None
-        for i in response:
-            if i._mapping.get("r_like"):
+        for reaction in response:
+            if reaction._mapping.get("r_like"):
                 return Reactions.like
-            if i._mapping.get("r_dislike"):
+            if reaction._mapping.get("r_dislike"):
                 return Reactions.dislike
 
     async def add_reaction(
@@ -81,7 +83,7 @@ class ReactionsRepository(BaseReactionsRepository, Repository):
         self.session.add(user_reaction)
         try:
             await self.session.commit()
-        except sqlalchemy.exc.IntegrityError:
+        except IntegrityError:
             await self.session.rollback()
             return False
         return True

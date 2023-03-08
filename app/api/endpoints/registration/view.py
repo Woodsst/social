@@ -4,11 +4,15 @@ from typing import Union
 from fastapi import APIRouter, Depends
 from starlette.responses import JSONResponse
 
-from api.endpoints.registration.service import (RegistrationService,
-                                                get_registration_service)
-from models.authentication_models import (RegistrationRequest,
-                                          RegistrationResponse,
-                                          RegistrationStatus)
+from api.endpoints.registration.service import (
+    RegistrationService,
+    get_registration_service,
+)
+from models.authentication_models import (
+    RegistrationRequest,
+    RegistrationResponse,
+    RegistrationStatus,
+)
 
 registration_router = APIRouter()
 
@@ -28,10 +32,9 @@ async def registration(
         return RegistrationResponse(
             registration_status=RegistrationStatus.complete
         )
-    else:
-        return JSONResponse(
-            status_code=HTTPStatus.CONFLICT,
-            content=RegistrationResponse(
-                registration_status=RegistrationStatus.user_exists
-            ).dict(),
-        )
+    return JSONResponse(
+        status_code=HTTPStatus.CONFLICT,
+        content=RegistrationResponse(
+            registration_status=RegistrationStatus.user_exists
+        ).dict(),
+    )

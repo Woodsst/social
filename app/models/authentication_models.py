@@ -42,6 +42,7 @@ class LoginRequest(BaseModel):
 
 
 class Tokens(BaseModel):
+    """Model with tokens."""
 
     access_token: Optional[str]
     refresh_token: Optional[str]

@@ -3,8 +3,10 @@ from uuid import UUID
 from fastapi import Depends
 
 from api.endpoints.base import ServiceWithToken
-from api.endpoints.user_page.repository import (BaseUserPageRepository,
-                                                get_user_page_repo)
+from api.endpoints.user_page.repository import (
+    BaseUserPageRepository,
+    get_user_page_repo,
+)
 from models.user_page_models import Post, UserDataInPage
 from utils.tokens import decode_access_token, token_checkout
 
@@ -45,9 +47,12 @@ class UserPageService(ServiceWithToken):
     async def get_self_data(
         self, page_size: int, page_number: int
     ) -> UserDataInPage:
+        """Getting data from a token, with pagination."""
         payload: dict = decode_access_token(self.token)
         user_id = payload.get("sub")
-        return await self.get_user_data(user_id, page_size, page_number)  # type: ignore
+        return await self.get_user_data(
+            user_id, page_size, page_number  # type: ignore
+        )
 
 
 def get_user_page_service(

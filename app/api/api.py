@@ -10,10 +10,14 @@ api_router = APIRouter()
 
 api_router.include_router(login_router, prefix="/login", tags=["Authorization"])
 api_router.include_router(
-    registration_router, prefix="/registration", tags=["Authorization"]
+    registration_router,
+    prefix="/registration",
+    tags=["Authorization"],
 )
 api_router.include_router(user_router, tags=["User Page"])
 api_router.include_router(
-    user_reaction, prefix="/reaction", tags=["User reactions"]
+    user_reaction,
+    prefix="/reaction",
+    tags=["User reactions"],
 )
 api_router.include_router(posts, prefix="/post", tags=["Posts CRUD"])

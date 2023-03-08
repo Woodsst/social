@@ -16,12 +16,18 @@ class BaseLoginRepository(ABC):
     """Interface from login repository."""
 
     @abc.abstractmethod
-    async def get_user_id_and_password(self, login: str) -> Union[Tuple[None, None], Any]:
+    async def get_user_id_and_password(
+        self, login: str
+    ) -> Union[Tuple[None, None], Any]:
         """Request in db for get user id."""
 
 
 class LoginRepository(BaseLoginRepository, Repository):
-    async def get_user_id_and_password(self, login: str) -> Union[Tuple[None, None], Any]:
+    """Repository for work with a database with user data."""
+
+    async def get_user_id_and_password(
+        self, login: str
+    ) -> Union[Tuple[None, None], Any]:
         """Request in db for get user id."""
         stmt = select(Users.id, Users.password).where(Users.login == login)
         request = await self.session.execute(stmt)

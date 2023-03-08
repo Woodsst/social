@@ -3,8 +3,10 @@ from typing import Any
 
 from fastapi import Depends
 
-from api.endpoints.registration.repository import (BaseRegistrationRepository,
-                                                   get_registration_repo)
+from api.endpoints.registration.repository import (
+    BaseRegistrationRepository,
+    get_registration_repo,
+)
 from models.authentication_models import RegistrationRequest
 
 
