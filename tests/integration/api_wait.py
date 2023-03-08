@@ -1,16 +1,19 @@
 import time
 
-from requests import post, exceptions
+from requests import post, exceptions  # type: ignore
 
 from config import get_settings
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 
-def wait():
+def wait() -> None:
     while True:
         try:
             post(f"{get_settings().url}registration/", json={"": ""})
         except exceptions.ConnectionError:
-            print("Failed connect")
+            logger.warning("Failed connect")
             time.sleep(1)
             continue
         break

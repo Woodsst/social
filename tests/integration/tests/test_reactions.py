@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 import pytest
 from psycopg import Cursor
-from requests import Session
+from requests import Session  # type: ignore
 
 from config import get_settings
 from data.data_for_test import user_1, user_2_post
@@ -27,9 +27,8 @@ def test_add_reaction(
     postgres_cur: Cursor,
     add_test_data_in_postgres: None,
     reaction_code: int,
-):
+) -> None:
     """Test 'add reactions' endpoint."""
-
     tokens: dict = login(
         http_session,
         {"login": user_1.get("login"), "password": user_1.get("password")},
@@ -67,9 +66,8 @@ def test_add_reaction_access_error(
     add_test_data_in_postgres: None,
     token: str | None,
     status_code: HTTPStatus,
-):
+) -> None:
     """Test access for 'reactions' endpoint."""
-
     response = http_session.post(
         url=f"{sett.url}reaction",
         headers={"Authorization": token},
@@ -94,9 +92,8 @@ def test_add_reaction_error(
     add_test_data_in_postgres: None,
     status_code: HTTPStatus,
     body: dict,
-):
+) -> None:
     """Test - wrong request to add reaction."""
-
     tokens: dict = login(
         http_session,
         {"login": user_1.get("login"), "password": user_1.get("password")},
@@ -125,9 +122,8 @@ def test_del_reaction(
     postgres_cur: Cursor,
     add_test_data_in_postgres: None,
     reaction_code: int,
-):
+) -> None:
     """Test 'delete reactions' endpoint."""
-
     tokens: dict = login(
         http_session,
         {"login": user_1.get("login"), "password": user_1.get("password")},

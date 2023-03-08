@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from psycopg import Cursor
-from requests import Session
+from requests import Session  # type: ignore
 
 from config import get_settings
 from tests_utils.postgres_requests import get_user_data
@@ -11,10 +11,9 @@ sett = get_settings()
 
 
 def test_registration(
-    postgres_cur: Cursor, http_session: Session, clear_postgres
-):
+    postgres_cur: Cursor, http_session: Session, clear_postgres: None
+) -> None:
     """Test - correctly working registration endpoint."""
-
     response = http_session.post(
         url=f"{sett.url}registration/",
         json=user_data_for_registration,
@@ -32,9 +31,8 @@ def test_registration(
     )
 
 
-def test_registration_unprocessable_entity(http_session: Session):
+def test_registration_unprocessable_entity(http_session: Session) -> None:
     """Test - for unprocessable entity error."""
-
     user_data = {
         "wrong_data": "i am wrong",
     }

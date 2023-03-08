@@ -15,7 +15,6 @@ sett = get_settings()
 @fixture(scope="session")
 def postgres_cur() -> Generator:
     """Fixture for getting postgres cursor."""
-
     con = psycopg.connect(sett.postgres_test_dsn, row_factory=dict_row)
     cursor = con.cursor()
     yield cursor
@@ -23,14 +22,14 @@ def postgres_cur() -> Generator:
 
 
 @fixture(scope="function")
-def clear_postgres(postgres_cur: Cursor):
+def clear_postgres(postgres_cur: Cursor) -> Generator:
     """Fixture for clear all data in postgres after test worked."""
     yield
     delete_data(postgres_cur)
 
 
 @fixture(scope="function")
-def add_test_data_in_postgres(postgres_cur: Cursor):
+def add_test_data_in_postgres(postgres_cur: Cursor) -> Generator:
     """Fixture for add and delete data in postgres."""
     add_test_data(postgres_cur)
     yield

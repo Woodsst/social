@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 import pytest
 from psycopg import Cursor
-from requests import Session
+from requests import Session  # type: ignore
 
 from config import get_settings
 from data.data_for_test import user_1, user_1_post
@@ -13,10 +13,9 @@ sett = get_settings()
 
 
 def test_get_user_page(
-    postgres_cur: Cursor, http_session: Session, add_test_data_in_postgres
-):
+    postgres_cur: Cursor, http_session: Session, add_test_data_in_postgres: None
+) -> None:
     """Test - correctly working user_page endpoint."""
-
     tokens: dict = login(
         http_session,
         {"login": user_1.get("login"), "password": user_1.get("password")},
@@ -33,7 +32,7 @@ def test_get_user_page(
     )
 
     payload: dict = response.json()
-    posts: list = payload.get("posts")
+    posts = payload.get("posts")
 
     assert response.status_code == HTTPStatus.OK
     assert user_1.get("name") == payload.get("user_name")
@@ -56,8 +55,11 @@ def test_get_user_page(
     ),
 )
 def test_get_user_page_access_denied(
-    token, status_code, http_session: Session, add_test_data_in_postgres
-):
+    token: str | None,
+    status_code: HTTPStatus,
+    http_session: Session,
+    add_test_data_in_postgres: None,
+) -> None:
     """Test - access for user_page endpoint."""
     response = http_session.get(
         url=f"{sett.url}?page_size=10&page_number=0", headers=token

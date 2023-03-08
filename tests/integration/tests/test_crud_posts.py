@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 import pytest
 from psycopg import Cursor
-from requests import Session, post
+from requests import Session, post  # type: ignore
 
 from tests_utils.http_requests import login, get_user_data, add_post
 from data.data_for_test import user_1, user_1_post
@@ -13,9 +13,10 @@ from tests_utils.postgres_requests import get_post_by_id
 sett = get_settings()
 
 
-def test_add_post(http_session: Session, add_test_data_in_postgres: None):
+def test_add_post(
+    http_session: Session, add_test_data_in_postgres: None
+) -> None:
     """Test - add post."""
-
     tokens: dict = login(
         http_session,
         {"login": user_1.get("login"), "password": user_1.get("password")},
@@ -50,9 +51,8 @@ def test_add_posts_error(
     add_test_data_in_postgres: None,
     token: str | None,
     status_code: HTTPStatus,
-):
+) -> None:
     """Test - wrong request to add new post."""
-
     content = "Test post 1"
     body = {"content": content}
 
@@ -67,9 +67,8 @@ def test_add_posts_error(
 
 def test_edit_post(
     postgres_cur: Cursor, http_session: Session, add_test_data_in_postgres: None
-):
+) -> None:
     """Test - edit post."""
-
     tokens: dict = login(
         http_session,
         {"login": user_1.get("login"), "password": user_1.get("password")},
@@ -115,9 +114,8 @@ def test_edit_post_access_error(
     add_test_data_in_postgres: None,
     token: str | None,
     status_code: HTTPStatus,
-):
+) -> None:
     """Test - access error to 'edit post' endpoint."""
-
     response = http_session.patch(
         url=f"{sett.url}post/edit",
         headers={"Authorization": token},
@@ -145,9 +143,8 @@ def test_edit_post_request_error(
     add_test_data_in_postgres: None,
     status_code: HTTPStatus,
     body: dict | None,
-):
+) -> None:
     """Test - wrong request to edit post."""
-
     tokens: dict = login(
         http_session,
         {"login": user_1.get("login"), "password": user_1.get("password")},
@@ -167,9 +164,8 @@ def test_edit_post_request_error(
 
 def test_delete_post(
     postgres_cur: Cursor, http_session: Session, add_test_data_in_postgres: None
-):
+) -> None:
     """Test for delete post endpoint."""
-
     tokens: dict = login(
         http_session,
         {"login": user_1.get("login"), "password": user_1.get("password")},
@@ -205,9 +201,8 @@ def test_delete_post_access_error(
     add_test_data_in_postgres: None,
     status_code: HTTPStatus,
     token: str | None,
-):
+) -> None:
     """Test access error for 'delete post' endpoint."""
-
     response = http_session.patch(
         url=f"{sett.url}post/edit",
         headers={"Authorization": token},
@@ -219,9 +214,8 @@ def test_delete_post_access_error(
 def test_delete_post_delete_error(
     http_session: Session,
     add_test_data_in_postgres: None,
-):
+) -> None:
     """Test access error for 'delete post' endpoint."""
-
     tokens: dict = login(
         http_session,
         {"login": user_1.get("login"), "password": user_1.get("password")},

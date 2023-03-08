@@ -1,9 +1,10 @@
+from typing import Optional, Any
+
 from psycopg import Cursor
 
 
-def get_user_data(cursor: Cursor, user_name: str) -> tuple:
-    """Getting user data to user name"""
-
+def get_user_data(cursor: Cursor, user_name: str) -> Optional[Any]:
+    """Getting user data to user name."""
     sql = """
         SELECT *
         FROM users
@@ -15,9 +16,8 @@ def get_user_data(cursor: Cursor, user_name: str) -> tuple:
     return cursor.fetchone()
 
 
-def get_post_by_id(cursor: Cursor, post_id: str) -> dict:
+def get_post_by_id(cursor: Cursor, post_id: str) -> Optional[Any]:
     """Getting post data by post id."""
-
     sql = """
     SELECT *
     FROM posts

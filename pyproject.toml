@@ -16,6 +16,7 @@ files = "./**/*.py"
 module = [
     "app.db.*",
     "app.schemas.*",
+    "tests.integration.tests.*",
 
 ]
 ignore_errors = true

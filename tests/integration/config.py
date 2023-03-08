@@ -12,11 +12,12 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_access_secret: str = Field("super secret string for access token")
     jwt_refresh_secret: str = Field("super secret string for refresh token")
-    jwt_access_lifetime: int = Field(1)
-    jwt_refresh_lifetime: int = Field(14)
+    jwt_access_lifetime_hour: int = Field(1)
+    refresh_time = 14
+    jwt_refresh_lifetime_day: int = Field(refresh_time)
 
 
 @lru_cache()
-def get_settings():
+def get_settings() -> Settings:
     """Settings factory."""
-    return Settings()
+    return Settings()  # type: ignore

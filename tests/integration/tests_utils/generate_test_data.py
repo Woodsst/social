@@ -14,9 +14,8 @@ from data.data_for_test import (
 from tests_utils.hashed_password import hash_password
 
 
-def add_user(user_data: dict, cursor: Cursor):
+def add_user(user_data: dict, cursor: Cursor) -> None:
     """Add test users."""
-
     sql = """
     INSERT INTO users (id, login, password, email, name)
     VALUES (%s,%s,%s,%s,%s)
@@ -35,9 +34,8 @@ def add_user(user_data: dict, cursor: Cursor):
     cursor.connection.commit()
 
 
-def add_post(post_data: dict, cursor: Cursor):
+def add_post(post_data: dict, cursor: Cursor) -> None:
     """Add test posts."""
-
     sql = """
     INSERT INTO posts (id, post, author_id, create_at)
     VALUES (%s, %s, %s, %s)
@@ -54,7 +52,7 @@ def add_post(post_data: dict, cursor: Cursor):
     cursor.connection.commit()
 
 
-def add_user_reaction(reaction_data: dict, cursor: Cursor):
+def add_user_reaction(reaction_data: dict, cursor: Cursor) -> None:
     """Add test users reactions."""
     sql = """
     INSERT INTO users_reaction (post_id, user_id, reaction)
@@ -72,9 +70,8 @@ def add_user_reaction(reaction_data: dict, cursor: Cursor):
     cursor.connection.commit()
 
 
-def add_like_and_dislike(cursor: Cursor):
+def add_like_and_dislike(cursor: Cursor) -> None:
     """Add like and dislike to test posts."""
-
     sql = """
     INSERT INTO users_reaction (id, post_id, r_like)
     VALUES (%s,%s,%s)
@@ -102,9 +99,8 @@ def add_like_and_dislike(cursor: Cursor):
     cursor.connection.commit()
 
 
-def add_test_data(cursor: Cursor):
-    """Add all test data in postgres"""
-
+def add_test_data(cursor: Cursor) -> None:
+    """Add all test data in postgres."""
     for user in (user_1, user_3, user_2):
         add_user(user, cursor)
 
@@ -114,7 +110,7 @@ def add_test_data(cursor: Cursor):
     add_like_and_dislike(cursor)
 
 
-def delete_data(cursor: Cursor):
+def delete_data(cursor: Cursor) -> None:
     sql = """
     DELETE FROM users_reaction;
     DELETE FROM posts;

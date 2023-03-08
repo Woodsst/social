@@ -1,4 +1,4 @@
-import requests
+import requests  # type: ignore
 from pytest import fixture
 from requests import Session
 

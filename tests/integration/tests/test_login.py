@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 import pytest
-from requests import Session
+from requests import Session  # type: ignore
 
 from config import get_settings
 from tests_utils.http_requests import registration, login
@@ -14,7 +14,7 @@ from data.data_for_test import (
 sett = get_settings()
 
 
-def test_login(http_session: Session, clear_postgres):
+def test_login(http_session: Session, clear_postgres: None) -> None:
     """Test - worked login endpoint."""
     registration(http_session, user_data_for_registration)
 
@@ -43,8 +43,11 @@ def test_login(http_session: Session, clear_postgres):
     ),
 )
 def test_login_error(
-    http_session: Session, clear_postgres, user_data, status_code
-):
+    http_session: Session,
+    clear_postgres: None,
+    user_data: dict,
+    status_code: HTTPStatus,
+) -> None:
     """Test - worked login endpoint with uncorrected data from user."""
     registration(http_session, user_data_for_registration)
 
