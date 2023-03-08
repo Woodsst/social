@@ -24,7 +24,7 @@ def test_get_user_page(
     time.sleep(1)
 
     response = http_session.get(
-        url=f"{sett.url}?page_size=10&page_number=0",
+        url=f"{sett.url}user/home?page_size=10&page_number=0",
         headers={
             "Authorization": f"Bearer {access}",
             "accept": "application/json",
@@ -62,7 +62,7 @@ def test_get_user_page_access_denied(
 ) -> None:
     """Test - access for user_page endpoint."""
     response = http_session.get(
-        url=f"{sett.url}?page_size=10&page_number=0", headers=token
+        url=f"{sett.url}user/home?page_size=10&page_number=0", headers=token
     )
 
     assert response.status_code == status_code

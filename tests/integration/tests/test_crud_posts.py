@@ -57,7 +57,7 @@ def test_add_posts_error(
     body = {"content": content}
 
     response = post(
-        url=f"{sett.url}post/add",
+        url=f"{sett.url}post",
         headers={"Authorization": token},
         json=body,
     )
@@ -87,7 +87,7 @@ def test_edit_post(
     post_for_edit_request_body = {"content": "Edited post", "post_id": post_id}
 
     response = http_session.patch(
-        url=f"{sett.url}post/edit",
+        url=f"{sett.url}post",
         headers={"Authorization": f"Bearer {access}"},
         json=post_for_edit_request_body,
     )
@@ -117,7 +117,7 @@ def test_edit_post_access_error(
 ) -> None:
     """Test - access error to 'edit post' endpoint."""
     response = http_session.patch(
-        url=f"{sett.url}post/edit",
+        url=f"{sett.url}post",
         headers={"Authorization": token},
     )
 
@@ -154,7 +154,7 @@ def test_edit_post_request_error(
     time.sleep(1)
 
     response = http_session.patch(
-        url=f"{sett.url}post/edit",
+        url=f"{sett.url}post",
         headers={"Authorization": f"Bearer {access}"},
         json=body,
     )
@@ -178,7 +178,7 @@ def test_delete_post(
     assert len(user_data.get("posts")) == 1
 
     response = http_session.delete(
-        url=f"{sett.url}post/delete?post_id={user_1_post.get('id')}",
+        url=f"{sett.url}post?post_id={user_1_post.get('id')}",
         headers={"Authorization": f"Bearer {access}"},
     )
 
@@ -204,7 +204,7 @@ def test_delete_post_access_error(
 ) -> None:
     """Test access error for 'delete post' endpoint."""
     response = http_session.patch(
-        url=f"{sett.url}post/edit",
+        url=f"{sett.url}post",
         headers={"Authorization": token},
     )
 

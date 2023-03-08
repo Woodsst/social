@@ -15,7 +15,7 @@ def test_registration(
 ) -> None:
     """Test - correctly working registration endpoint."""
     response = http_session.post(
-        url=f"{sett.url}registration/",
+        url=f"{sett.url}registration",
         json=user_data_for_registration,
     )
 
@@ -38,7 +38,7 @@ def test_registration_unprocessable_entity(http_session: Session) -> None:
     }
 
     response = http_session.post(
-        url=f"{sett.url}registration/",
+        url=f"{sett.url}registration",
         json=user_data,
     )
 
