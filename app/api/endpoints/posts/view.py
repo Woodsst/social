@@ -9,7 +9,7 @@ posts = APIRouter()
 
 
 @posts.post(
-    path="/add",
+    path="",
     description="Add new post.",
 )
 async def add_post(
@@ -20,7 +20,7 @@ async def add_post(
     return {"message": "ok"}
 
 
-@posts.patch(path="/edit", description="Edit post")
+@posts.patch(path="", description="Edit post")
 async def edit_post(
     post: EditPost,
     service: PostsCrud = Depends(get_posts_crud_service),
@@ -30,7 +30,7 @@ async def edit_post(
     return {"message": "ok"}
 
 
-@posts.delete(path="/delete", description="Delete post")
+@posts.delete(path="", description="Delete post")
 async def delete_post(
     post_id: UUID, service: PostsCrud = Depends(get_posts_crud_service)
 ) -> dict:

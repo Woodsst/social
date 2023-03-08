@@ -13,7 +13,7 @@ user_router = APIRouter()
 
 
 @user_router.get(
-    path="/",
+    path="/user/home",
     description="Get user data for home user page.",
     response_model=UserDataInPage,
 )

@@ -17,7 +17,7 @@ login_router = APIRouter()
 
 
 @login_router.post(
-    path="/",
+    path="",
     description="Reqeust for login",
     response_model=LoginResponse,
     responses={HTTPStatus.CONFLICT.value: {"model": LoginWrong}},

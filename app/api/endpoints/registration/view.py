@@ -18,7 +18,7 @@ registration_router = APIRouter()
 
 
 @registration_router.post(
-    path="/",
+    path="",
     description="Reqeust for registration",
     response_model=RegistrationResponse,
     responses={HTTPStatus.CONFLICT.value: {"model": RegistrationResponse}},

@@ -13,7 +13,7 @@ user_reaction = APIRouter()
 
 
 @user_reaction.post(
-    path="/",
+    path="",
     description="add reaction.",
 )
 async def add_reaction_for_post(
